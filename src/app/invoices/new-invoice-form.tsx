@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { invoiceSchema } from '@/lib/validation';
 import { useRouter } from 'next/navigation';
 
 type Line = { description: string; qty: number; unitPrice: number };
@@ -13,8 +15,9 @@ type FormData = {
 };
 
 export default function NewInvoiceForm() {
-  const { register, control, handleSubmit, watch, reset } = useForm<FormData>({
+  const { register, control, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     defaultValues: { vatRate: 0.17, date: new Date().toISOString().slice(0, 10), lines: [{ description: '', qty: 1, unitPrice: 0 }] },
+    resolver: zodResolver(invoiceSchema as any),
   });
   const { fields, append, remove } = useFieldArray({ control, name: 'lines' });
   const [suppliers, setSuppliers] = useState<any[]>([]);
@@ -95,7 +98,7 @@ export default function NewInvoiceForm() {
         <div className="card">סה&quot;כ: {total.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
       </div>
       <div>
-        <button className="primary" type="submit">שמירה</button>
+        <button className="primary" type="submit" disabled={isSubmitting}>{isSubmitting ? 'שומר…' : 'שמירה'}</button>
       </div>
     </form>
   );

@@ -1,12 +1,17 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { recurringSchema } from '@/lib/validation';
 import { useRouter } from 'next/navigation';
 
 type FormData = { supplierId: number; title: string; amount: number; dayOfMonth: number; active: boolean; notes?: string };
 
 export default function RecurringForm() {
-  const { register, handleSubmit, reset } = useForm<FormData>({ defaultValues: { dayOfMonth: 1, active: true } });
+  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm<FormData>({
+    defaultValues: { dayOfMonth: 1, active: true },
+    resolver: zodResolver(recurringSchema as any),
+  });
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const router = useRouter();
 
@@ -32,7 +37,7 @@ export default function RecurringForm() {
         <label>פעיל <input type="checkbox" {...register('active')} /></label>
       </div>
       <label>הערות<input {...register('notes')} /></label>
-      <div><button className="primary" type="submit">שמירה</button></div>
+  <div><button className="primary" type="submit" disabled={isSubmitting}>{isSubmitting ? 'שומר…' : 'שמירה'}</button></div>
     </form>
   );
 }

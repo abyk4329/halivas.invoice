@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { paymentSchema } from '@/lib/validation';
 import { useRouter } from 'next/navigation';
 
 type Allocation = { invoiceId: number; amount: number };
@@ -16,8 +18,9 @@ type FormData = {
 
 export default function NewPaymentForm() {
   const emptyAllocs = useMemo<Allocation[]>(() => [], []);
-  const { register, handleSubmit, watch, setValue, reset } = useForm<FormData>({
+  const { register, handleSubmit, watch, setValue, reset, formState: { isSubmitting } } = useForm<FormData>({
     defaultValues: { date: new Date().toISOString().slice(0, 10), method: 'BANK_TRANSFER', allocations: emptyAllocs },
+    resolver: zodResolver(paymentSchema as any),
   });
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -107,7 +110,7 @@ export default function NewPaymentForm() {
         </div>
       )}
       <div>
-        <button className="primary" type="submit">שמירה</button>
+  <button className="primary" type="submit" disabled={isSubmitting}>{isSubmitting ? 'שומר…' : 'שמירה'}</button>
       </div>
     </form>
   );
