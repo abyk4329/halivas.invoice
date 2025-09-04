@@ -14,8 +14,9 @@ type FormData = {
 };
 
 export default function NewPaymentForm() {
+  const emptyAllocs = useMemo<Allocation[]>(() => [], []);
   const { register, handleSubmit, watch, setValue, reset } = useForm<FormData>({
-    defaultValues: { date: new Date().toISOString().slice(0, 10), method: 'BANK_TRANSFER', allocations: [] },
+    defaultValues: { date: new Date().toISOString().slice(0, 10), method: 'BANK_TRANSFER', allocations: emptyAllocs },
   });
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -38,7 +39,7 @@ export default function NewPaymentForm() {
     if (res.ok) { reset(); location.reload(); } else { alert('שגיאה בשמירת תשלום'); }
   };
 
-  const allocs = watch('allocations') || [];
+  const allocs = useMemo(() => watch('allocations') || [], [watch]);
   const amount = Number(watch('amount') || 0);
   const allocSum = useMemo(() => allocs.reduce((s, a) => s + Number(a.amount || 0), 0), [allocs]);
 

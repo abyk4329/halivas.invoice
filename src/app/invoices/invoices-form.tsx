@@ -69,7 +69,7 @@ export default function InvoicesForm() {
           <input value={form.number} onChange={(e) => setForm(f => ({ ...f, number: e.target.value }))} />
         </label>
         <label>
-          מע"מ
+          מע&quot;מ
           <input type="number" step="0.01" value={form.vatRate} onChange={(e) => setForm(f => ({ ...f, vatRate: Number(e.target.value) }))} />
         </label>
       </div>
@@ -98,8 +98,8 @@ export default function InvoicesForm() {
       </div>
       <div className="grid cols-3">
         <div className="card">ביניים: {totals.subtotal.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
-        <div className="card">מע"מ: {totals.vat.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
-        <div className="card">סה"כ: {totals.total.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
+        <div className="card">מע&quot;מ: {totals.vat.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
+        <div className="card">סה&quot;כ: {totals.total.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
       </div>
       <div>
         <button className="primary" onClick={submit}>שמירה</button>

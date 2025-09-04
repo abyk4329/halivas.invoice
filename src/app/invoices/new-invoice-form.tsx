@@ -86,11 +86,11 @@ export default function NewInvoiceForm() {
       </div>
       <div className="grid cols-3">
         <label>
-          מע"מ (%)
+          מע&quot;מ (%)
           <input type="number" step="0.01" {...register('vatRate', { valueAsNumber: true })} />
         </label>
         <div className="card">ביניים: {subtotal.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
-        <div className="card">סה"כ: {total.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
+        <div className="card">סה&quot;כ: {total.toLocaleString('he-IL', { style: 'currency', currency: 'ILS' })}</div>
       </div>
       <div>
         <button className="primary" type="submit">שמירה</button>

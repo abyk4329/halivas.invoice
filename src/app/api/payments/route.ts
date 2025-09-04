@@ -27,7 +27,6 @@ export async function POST(req: Request) {
       currency: data.currency || 'ILS',
       reference: data.reference || null,
       details: data.details || null,
-      meta: data.meta || undefined,
       allocations: allocations.length
         ? { create: allocations.map((a: any) => ({ invoiceId: a.invoiceId, amount: a.amount })) }
         : undefined,

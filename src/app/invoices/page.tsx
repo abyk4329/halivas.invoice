@@ -24,7 +24,7 @@ export default async function InvoicesPage() {
                 <th>תאריך</th>
                 <th>ספק</th>
                 <th>מס׳ חשבונית</th>
-                <th>סה"כ</th>
+                <th>סה&quot;כ</th>
                 <th>יתרה</th>
               </tr>
             </thead>
