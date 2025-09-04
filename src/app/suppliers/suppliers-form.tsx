@@ -1,5 +1,6 @@
 'use client';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 type FormData = {
   name: string;
@@ -11,6 +12,8 @@ type FormData = {
 
 export default function SuppliersForm() {
   const { register, handleSubmit, reset } = useForm<FormData>();
+  const router = useRouter();
+  const onError = () => alert('שגיאה בשמירת ספק');
 
   const onSubmit = async (data: FormData) => {
     const res = await fetch('/api/suppliers', {
@@ -20,10 +23,9 @@ export default function SuppliersForm() {
     });
     if (res.ok) {
       reset();
-      // refresh list
-      location.reload();
+      router.refresh();
     } else {
-      alert('שגיאה בשמירת ספק');
+      onError();
     }
   };
 

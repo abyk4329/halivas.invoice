@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { invoiceSchema } from '@/lib/validation';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -24,35 +25,37 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const data = await req.json();
-  // Expect: { supplierId, number, type, date, dueDate?, currency?, lines: [{ description, qty, unitPrice }], vatRate? }
-  const lines = data.lines || [];
-  const subtotal = lines.reduce((s: number, l: any) => s + Number(l.qty || 1) * Number(l.unitPrice || 0), 0);
-  const vatRate = typeof data.vatRate === 'number' ? data.vatRate : 0.17;
-  const vat = subtotal * vatRate;
-  const total = subtotal + vat;
+  try {
+    const json = await req.json();
+    const parsed = invoiceSchema.parse(json);
+    const lines = parsed.lines;
+    const subtotal = lines.reduce((s, l) => s + Number(l.qty) * Number(l.unitPrice), 0);
+    const vat = subtotal * Number(parsed.vatRate);
+    const total = subtotal + vat;
 
-  const invoice = await prisma.invoice.create({
-    data: {
-      supplierId: data.supplierId,
-      number: data.number,
-      type: data.type ?? 'INVOICE',
-      date: new Date(data.date),
-      dueDate: data.dueDate ? new Date(data.dueDate) : null,
-      currency: data.currency || 'ILS',
-      subtotal,
-      vat,
-      total,
-      lines: {
-        create: lines.map((l: any) => ({
-          description: l.description,
-          qty: l.qty || 1,
-          unitPrice: l.unitPrice || 0,
-          total: Number(l.qty || 1) * Number(l.unitPrice || 0),
-        })),
+    const invoice = await prisma.invoice.create({
+      data: {
+        supplierId: parsed.supplierId,
+        number: parsed.number,
+        type: parsed.type || 'INVOICE',
+        date: parsed.date,
+        dueDate: parsed.dueDate ?? null,
+        currency: parsed.currency || 'ILS',
+        subtotal,
+        vat,
+        total,
+        lines: {
+          create: lines.map((l) => ({
+            description: l.description,
+            qty: l.qty,
+            unitPrice: l.unitPrice,
+            total: Number(l.qty) * Number(l.unitPrice),
+          })),
+        },
       },
-    },
-  });
-
-  return NextResponse.json(invoice, { status: 201 });
+    });
+    return NextResponse.json(invoice, { status: 201 });
+  } catch (e: any) {
+    return NextResponse.json({ error: 'Invalid input', details: e?.message }, { status: 400 });
+  }
 }

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 type Allocation = { invoiceId: number; amount: number };
 type FormData = {
@@ -20,6 +21,7 @@ export default function NewPaymentForm() {
   });
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const router = useRouter();
 
   const supplierId = watch('supplierId');
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function NewPaymentForm() {
     const res = await fetch('/api/payments', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
     });
-    if (res.ok) { reset(); location.reload(); } else { alert('שגיאה בשמירת תשלום'); }
+  if (res.ok) { reset(); router.refresh(); } else { alert('שגיאה בשמירת תשלום'); }
   };
 
   const allocs = useMemo(() => watch('allocations') || [], [watch]);

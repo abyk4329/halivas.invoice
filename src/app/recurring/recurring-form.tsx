@@ -1,18 +1,20 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 type FormData = { supplierId: number; title: string; amount: number; dayOfMonth: number; active: boolean; notes?: string };
 
 export default function RecurringForm() {
   const { register, handleSubmit, reset } = useForm<FormData>({ defaultValues: { dayOfMonth: 1, active: true } });
   const [suppliers, setSuppliers] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => { fetch('/api/suppliers').then(r => r.json()).then(setSuppliers); }, []);
 
   const onSubmit = async (data: FormData) => {
     const res = await fetch('/api/recurring', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-    if (res.ok) { reset(); location.reload(); } else { alert('שגיאה בשמירה'); }
+  if (res.ok) { reset(); router.refresh(); } else { alert('שגיאה בשמירה'); }
   };
 
   return (

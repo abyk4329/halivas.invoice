@@ -7,6 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum InvoiceType {
+  INVOICE
+  TAX_INVOICE
+  RECEIPT
+  CREDIT
+}
+
+enum InvoiceStatus {
+  OPEN
+  PARTIALLY_PAID
+  PAID
+  CANCELED
+}
+
+enum PaymentMethod {
+  CASH
+  CHECK
+  CREDIT_CARD
+  BANK_TRANSFER
+}
+
 model Supplier {
   id        Int       @id @default(autoincrement())
   name      String
@@ -25,19 +46,24 @@ model Invoice {
   id           Int              @id @default(autoincrement())
   supplierId   Int
   number       String           // מספר חשבונית/חשבונית מס/קבלה
-  type         String           @default("INVOICE") // INVOICE | TAX_INVOICE | RECEIPT | CREDIT
+  type         InvoiceType      @default(INVOICE)
   date         DateTime
   dueDate      DateTime?
   currency     String           @default("ILS")
   subtotal     Decimal          @default(0)
   vat          Decimal          @default(0)
   total        Decimal          @default(0)
-  status       String           @default("OPEN") // OPEN | PARTIALLY_PAID | PAID | CANCELED
+  status       InvoiceStatus    @default(OPEN)
   lines        InvoiceLine[]
   allocations  PaymentAllocation[]
   supplier     Supplier         @relation(fields: [supplierId], references: [id])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+
+  @@unique([supplierId, number])
+  @@index([supplierId])
+  @@index([date])
+  @@index([status])
 }
 
 model InvoiceLine {
@@ -54,7 +80,7 @@ model Payment {
   id           Int       @id @default(autoincrement())
   supplierId   Int
   date         DateTime
-  method       String   // CASH | CHECK | CREDIT_CARD | BANK_TRANSFER
+  method       PaymentMethod
   amount       Decimal
   currency     String     @default("ILS")
   reference    String?    // צ'ק: מספרים; אשראי: מס' עסקאות; מזומן: תיאור
@@ -62,6 +88,9 @@ model Payment {
   allocations  PaymentAllocation[]
   supplier     Supplier   @relation(fields: [supplierId], references: [id])
   createdAt    DateTime   @default(now())
+
+  @@index([supplierId])
+  @@index([date])
 }
 
 model PaymentAllocation {
@@ -71,6 +100,9 @@ model PaymentAllocation {
   amount     Decimal
   payment    Payment @relation(fields: [paymentId], references: [id])
   invoice    Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@index([paymentId])
+  @@index([invoiceId])
 }
 
 model RecurringExpense {
@@ -84,5 +116,7 @@ model RecurringExpense {
   supplier    Supplier  @relation(fields: [supplierId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([supplierId])
 }
 

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 type Line = { description: string; qty: number; unitPrice: number };
 type FormData = {
@@ -17,6 +18,7 @@ export default function NewInvoiceForm() {
   });
   const { fields, append, remove } = useFieldArray({ control, name: 'lines' });
   const [suppliers, setSuppliers] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetch('/api/suppliers').then(r => r.json()).then(setSuppliers);
@@ -35,7 +37,7 @@ export default function NewInvoiceForm() {
     });
     if (res.ok) {
       reset();
-      location.reload();
+  router.refresh();
     } else {
       alert('שגיאה בשמירת חשבונית');
     }

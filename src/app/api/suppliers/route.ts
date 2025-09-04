@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { supplierSchema } from '@/lib/validation';
 
 export async function GET() {
   const suppliers = await prisma.supplier.findMany({
@@ -32,13 +33,18 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const data = await req.json();
-  const supplier = await prisma.supplier.create({ data: {
-    name: data.name,
-    phone: data.phone ?? null,
-    email: data.email ?? null,
-    taxId: data.taxId ?? null,
-    notes: data.notes ?? null,
-  }});
-  return NextResponse.json(supplier, { status: 201 });
+  try {
+    const json = await req.json();
+    const data = supplierSchema.parse(json);
+    const supplier = await prisma.supplier.create({ data: {
+      name: data.name,
+      phone: data.phone ?? null,
+      email: data.email ?? null,
+      taxId: data.taxId ?? null,
+      notes: data.notes ?? null,
+    }});
+    return NextResponse.json(supplier, { status: 201 });
+  } catch (e: any) {
+    return NextResponse.json({ error: 'Invalid input', details: e?.message }, { status: 400 });
+  }
 }
