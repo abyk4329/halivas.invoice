@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Supplier {
+  id        Int       @id @default(autoincrement())
+  name      String
+  phone     String?
+  email     String?
+  taxId     String?
+  notes     String?
+  invoices  Invoice[]
+  payments  Payment[]
+  recurringExpenses RecurringExpense[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Invoice {
+  id           Int              @id @default(autoincrement())
+  supplierId   Int
+  number       String           // מספר חשבונית/חשבונית מס/קבלה
+  type         String           @default("INVOICE") // INVOICE | TAX_INVOICE | RECEIPT | CREDIT
+  date         DateTime
+  dueDate      DateTime?
+  currency     String           @default("ILS")
+  subtotal     Decimal          @default(0)
+  vat          Decimal          @default(0)
+  total        Decimal          @default(0)
+  status       String           @default("OPEN") // OPEN | PARTIALLY_PAID | PAID | CANCELED
+  lines        InvoiceLine[]
+  allocations  PaymentAllocation[]
+  supplier     Supplier         @relation(fields: [supplierId], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model InvoiceLine {
+  id        Int      @id @default(autoincrement())
+  invoiceId Int
+  description String
+  qty       Decimal @default(1)
+  unitPrice Decimal @default(0)
+  total     Decimal @default(0)
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+}
+
+model Payment {
+  id           Int       @id @default(autoincrement())
+  supplierId   Int
+  date         DateTime
+  method       String   // CASH | CHECK | CREDIT_CARD | BANK_TRANSFER
+  amount       Decimal
+  currency     String     @default("ILS")
+  reference    String?    // צ'ק: מספרים; אשראי: מס' עסקאות; מזומן: תיאור
+  details      String?
+  allocations  PaymentAllocation[]
+  supplier     Supplier   @relation(fields: [supplierId], references: [id])
+  createdAt    DateTime   @default(now())
+}
+
+model PaymentAllocation {
+  id         Int     @id @default(autoincrement())
+  paymentId  Int
+  invoiceId  Int
+  amount     Decimal
+  payment    Payment @relation(fields: [paymentId], references: [id])
+  invoice    Invoice @relation(fields: [invoiceId], references: [id])
+}
+
+model RecurringExpense {
+  id          Int       @id @default(autoincrement())
+  supplierId  Int
+  title       String
+  amount      Decimal
+  dayOfMonth  Int       // חיוב חודשי ביום X
+  active      Boolean   @default(true)
+  notes       String?
+  supplier    Supplier  @relation(fields: [supplierId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
