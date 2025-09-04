@@ -22,3 +22,6 @@ prisma/dev.db*
 # pwa
 public/sw.js
 public/workbox-*.js
+
+# build
+tsconfig.tsbuildinfo
