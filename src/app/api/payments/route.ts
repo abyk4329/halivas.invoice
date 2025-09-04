@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import type { Prisma, InvoiceStatus } from '@prisma/client';
 import { paymentSchema } from '@/lib/validation';
 
 export async function GET() {
@@ -39,16 +38,14 @@ export async function POST(req: Request) {
     // Update invoice statuses impacted by this payment
     if (allocations.length) {
       const ids = [...new Set(allocations.map(a => a.invoiceId))];
-      const affected: Prisma.InvoiceGetPayload<{ include: { allocations: true } }>[] =
-        await prisma.invoice.findMany({ where: { id: { in: ids } }, include: { allocations: true } });
-      await Promise.all(affected.map(async (inv) => {
-        const paid = inv.allocations.reduce((s: number, x) => s + Number(x.amount), 0);
+      const affected = await prisma.invoice.findMany({ 
+        where: { id: { in: ids } }, 
+        include: { allocations: true } 
+      });
+      await Promise.all(affected.map(async (inv: any) => {
+        const paid = inv.allocations.reduce((s: number, x: any) => s + Number(x.amount), 0);
         const balance = Number(inv.total) - paid;
-        const status: InvoiceStatus = (balance <= 0
-          ? 'PAID'
-          : paid > 0
-          ? 'PARTIALLY_PAID'
-          : 'OPEN') as InvoiceStatus;
+        const status = balance <= 0 ? 'PAID' : paid > 0 ? 'PARTIALLY_PAID' : 'OPEN';
         if (status !== inv.status) {
           await prisma.invoice.update({ where: { id: inv.id }, data: { status } });
         }
