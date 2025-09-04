@@ -18,3 +18,7 @@ pnpm-debug.log*
 
 # prisma
 prisma/dev.db*
+
+# pwa
+public/sw.js
+public/workbox-*.js
