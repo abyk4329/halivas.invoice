@@ -1,15 +1,19 @@
 import SuppliersForm from './suppliers-form';
 
 async function getSuppliers() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/suppliers`,
-    {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    const res = await fetch(`${baseUrl}/api/suppliers`, {
       // ensure fresh on server
       cache: 'no-store',
-    },
-  );
-  if (!res.ok) return [] as any[];
-  return (await res.json()) as any[];
+    });
+    if (!res.ok) return [] as any[];
+    return (await res.json()) as any[];
+  } catch (error) {
+    console.error('Failed to fetch suppliers:', error);
+    return [] as any[];
+  }
 }
 
 export default async function SuppliersPage() {

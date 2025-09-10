@@ -1,12 +1,16 @@
 import RecurringForm from './recurring-form';
 
 async function getRecurring() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/recurring`,
-    { cache: 'no-store' },
-  );
-  if (!res.ok) return [] as any[];
-  return (await res.json()) as any[];
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    const res = await fetch(`${baseUrl}/api/recurring`, { cache: 'no-store' });
+    if (!res.ok) return [] as any[];
+    return (await res.json()) as any[];
+  } catch (error) {
+    console.error('Failed to fetch recurring:', error);
+    return [] as any[];
+  }
 }
 
 export default async function RecurringPage() {
