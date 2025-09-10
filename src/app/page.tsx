@@ -3,55 +3,55 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <main>
-      <div className="text-center" style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--text)', margin: '0 0 8px 0' }}>
-          ברוכים הבאים למערכת חליווס
-        </h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
-          ניהול חכם של ספקים, חשבוניות ותשלומים
-        </p>
+      <div className="hero-section">
+        <div className="hero-content">
+          <h1 className="hero-title">מערכת ניהול חליווס</h1>
+          <p className="hero-subtitle">פלטפורמה מתקדמת לניהול ספקים, חשבוניות ותשלומים</p>
+        </div>
       </div>
       
-      <div className="grid cols-3">
-        <Link href="/suppliers" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <h3>🏢 ספקים</h3>
-          <p>ניהול פרטי ספקים ומעקב יתרות. הוספה, עריכה ומחיקה של ספקים.</p>
-          <div style={{ marginTop: '16px', color: 'var(--color-primary)', fontWeight: '500' }}>
-            לחץ לניהול ספקים ←
+      <div className="features-grid">
+        <Link href="/suppliers" className="feature-card">
+          <div className="feature-icon suppliers"></div>
+          <div className="feature-content">
+            <h3 className="feature-title">ספקים</h3>
+            <p className="feature-description">ניהול מקצועי של פרטי ספקים ומעקב יתרות פתוחות</p>
           </div>
+          <div className="feature-action">צפה בספקים</div>
         </Link>
         
-        <Link href="/invoices" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <h3>🧾 חשבוניות</h3>
-          <p>יצירת חשבוניות חדשות, מעקב סטטוס ויתרות לתשלום.</p>
-          <div style={{ marginTop: '16px', color: 'var(--color-primary)', fontWeight: '500' }}>
-            לחץ לניהול חשבוניות ←
+        <Link href="/invoices" className="feature-card">
+          <div className="feature-icon invoices"></div>
+          <div className="feature-content">
+            <h3 className="feature-title">חשבוניות</h3>
+            <p className="feature-description">יצירת חשבוניות דיגיטליות ומעקב סטטוס תשלומים</p>
           </div>
+          <div className="feature-action">נהל חשבוניות</div>
         </Link>
         
-        <Link href="/payments" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <h3>💳 תשלומים</h3>
-          <p>רישום תשלומים, שיוך לחשבוניות ומעקב אחר כל העסקאות.</p>
-          <div style={{ marginTop: '16px', color: 'var(--color-primary)', fontWeight: '500' }}>
-            לחץ לניהול תשלומים ←
+        <Link href="/payments" className="feature-card">
+          <div className="feature-icon payments"></div>
+          <div className="feature-content">
+            <h3 className="feature-title">תשלומים</h3>
+            <p className="feature-description">רישום תשלומים, שיוך לחשבוניות ודוחות מפורטים</p>
           </div>
+          <div className="feature-action">רשום תשלום</div>
         </Link>
       </div>
       
-      <div className="grid cols-2" style={{ marginTop: '24px' }}>
-        <Link href="/recurring" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <h3>📅 הוצאות קבועות</h3>
-          <p>ניהול הוצאות חודשיות קבועות כמו חשמל, מים, טלפון וכו׳.</p>
-          <div style={{ marginTop: '16px', color: 'var(--color-primary)', fontWeight: '500' }}>
-            לחץ לניהול הוצאות ←
+      <div className="secondary-grid">
+        <Link href="/recurring" className="secondary-card">
+          <div className="secondary-content">
+            <h4 className="secondary-title">הוצאות קבועות</h4>
+            <p className="secondary-description">ניהול אוטומטי של הוצאות חודשיות ותזכורות</p>
           </div>
         </Link>
         
-        <div className="card" style={{ background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)', color: 'white' }}>
-          <h3>📊 סטטיסטיקות</h3>
-          <p style={{ color: 'rgba(255,255,255,0.9)' }}>צפה בדוחות והתקדמות העסק שלך.</p>
-          <div style={{ marginTop: '16px', color: 'rgba(255,255,255,0.9)', fontWeight: '500' }}>
-            בקרוב...
+        <div className="secondary-card premium">
+          <div className="secondary-content">
+            <h4 className="secondary-title">דוחות ואנליטיקה</h4>
+            <p className="secondary-description">תובנות עסקיות מתקדמות ודוחות מפורטים</p>
+            <span className="premium-badge">בקרוב</span>
           </div>
         </div>
       </div>

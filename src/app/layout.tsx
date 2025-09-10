@@ -24,15 +24,15 @@ export default function RootLayout({
       <body className={assistant.className}>
         <header className="appbar">
           <div className="logo-container">
-            <img src="/halivas-logo.png" alt="חליווס" width={40} height={40} />
+            <div className="logo-placeholder"></div>
             <span>חליווס – מערכת ספקים וחשבוניות</span>
           </div>
           <nav>
-            <a href="/">🏠 בית</a>
-            <a href="/suppliers">🏢 ספקים</a>
-            <a href="/invoices">🧾 חשבוניות</a>
-            <a href="/payments">💳 תשלומים</a>
-            <a href="/recurring">📅 הוצאות קבועות</a>
+            <a href="/">בית</a>
+            <a href="/suppliers">ספקים</a>
+            <a href="/invoices">חשבוניות</a>
+            <a href="/payments">תשלומים</a>
+            <a href="/recurring">הוצאות קבועות</a>
           </nav>
         </header>
         {children}
