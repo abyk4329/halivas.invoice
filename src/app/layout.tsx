@@ -23,16 +23,16 @@ export default function RootLayout({
     <html lang="he" dir="rtl">
       <body className={assistant.className}>
         <header className="appbar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <img src="/favicon.svg" alt="חליווס" width={28} height={28} />
-            <b>חליווס – מערכת ספקים</b>
+          <div className="logo-container">
+            <img src="/halivas-logo.png" alt="חליווס" width={40} height={40} />
+            <span>חליווס – מערכת ספקים וחשבוניות</span>
           </div>
-          <nav style={{ display: 'flex', gap: 8 }}>
-            <a href="/">בית</a>
-            <a href="/suppliers">ספקים</a>
-            <a href="/invoices">חשבוניות</a>
-            <a href="/payments">תשלומים</a>
-            <a href="/recurring">הוצאות קבועות</a>
+          <nav>
+            <a href="/">🏠 בית</a>
+            <a href="/suppliers">🏢 ספקים</a>
+            <a href="/invoices">🧾 חשבוניות</a>
+            <a href="/payments">💳 תשלומים</a>
+            <a href="/recurring">📅 הוצאות קבועות</a>
           </nav>
         </header>
         {children}
