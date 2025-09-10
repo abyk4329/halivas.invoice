@@ -1,7 +1,10 @@
 import NewPaymentForm from './payment-form';
 
 async function getPayments() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/payments`, { cache: 'no-store' });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/payments`,
+    { cache: 'no-store' },
+  );
   if (!res.ok) return [] as any[];
   return (await res.json()) as any[];
 }
@@ -32,7 +35,12 @@ export default async function PaymentsPage() {
                 <tr key={p.id}>
                   <td>{new Date(p.date).toLocaleDateString('he-IL')}</td>
                   <td>{p.supplier?.name}</td>
-                  <td>{Number(p.amount).toLocaleString('he-IL', { style: 'currency', currency: p.currency || 'ILS' })}</td>
+                  <td>
+                    {Number(p.amount).toLocaleString('he-IL', {
+                      style: 'currency',
+                      currency: p.currency || 'ILS',
+                    })}
+                  </td>
                   <td>{p.method}</td>
                 </tr>
               ))}

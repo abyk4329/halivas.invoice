@@ -11,9 +11,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:studio": "prisma studio",
-  "test": "vitest",
-  "postinstall": "prisma generate",
-  "build:prod": "prisma migrate deploy && next build"
+    "test": "vitest",
+    "postinstall": "prisma generate",
+    "build:prod": "prisma migrate deploy && next build"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",

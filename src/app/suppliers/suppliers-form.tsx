@@ -28,10 +28,17 @@ export default function SuppliersForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid" style={{ gap: 12 }}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="grid"
+      style={{ gap: 12 }}
+    >
       <label>
         שם ספק
-        <input {...register('name', { required: true })} placeholder="לדוגמה: בזק" />
+        <input
+          {...register('name', { required: true })}
+          placeholder="לדוגמה: בזק"
+        />
       </label>
       <div className="grid cols-2">
         <label>
@@ -40,7 +47,11 @@ export default function SuppliersForm() {
         </label>
         <label>
           אימייל
-          <input type="email" {...register('email')} placeholder="name@domain.com" />
+          <input
+            type="email"
+            {...register('email')}
+            placeholder="name@domain.com"
+          />
         </label>
       </div>
       <div className="grid cols-2">
@@ -54,7 +65,9 @@ export default function SuppliersForm() {
         </label>
       </div>
       <div>
-        <button className="primary" type="submit">שמירה</button>
+        <button className="primary" type="submit">
+          שמירה
+        </button>
       </div>
     </form>
   );

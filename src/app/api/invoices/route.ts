@@ -16,7 +16,10 @@ export async function GET(req: Request) {
   });
   // compute balance per invoice
   const withBalance = (invoices as any[]).map((inv: any) => {
-    const paid = (inv.allocations as any[]).reduce((s: number, a: any) => s + Number(a.amount), 0);
+    const paid = (inv.allocations as any[]).reduce(
+      (s: number, a: any) => s + Number(a.amount),
+      0,
+    );
     const balance = Number(inv.total) - paid;
     return { ...inv, paid, balance } as any;
   });
@@ -27,10 +30,16 @@ export async function POST(req: Request) {
   const data = await req.json();
   // Expect: { supplierId, number, type, date, dueDate?, currency?, lines: [{ description, qty, unitPrice }], vatRate? }
   const lines = data.lines || [];
-  const subtotal = lines.reduce((s: number, l: any) => s + Number(l.qty || 1) * Number(l.unitPrice || 0), 0);
+  const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
+  const subtotal = round2(
+    lines.reduce(
+      (s: number, l: any) => s + Number(l.qty || 1) * Number(l.unitPrice || 0),
+      0,
+    ),
+  );
   const vatRate = typeof data.vatRate === 'number' ? data.vatRate : 0.17;
-  const vat = subtotal * vatRate;
-  const total = subtotal + vat;
+  const vat = round2(subtotal * vatRate);
+  const total = round2(subtotal + vat);
 
   const invoice = await prisma.invoice.create({
     data: {
@@ -48,7 +57,7 @@ export async function POST(req: Request) {
           description: l.description,
           qty: l.qty || 1,
           unitPrice: l.unitPrice || 0,
-          total: Number(l.qty || 1) * Number(l.unitPrice || 0),
+          total: round2(Number(l.qty || 1) * Number(l.unitPrice || 0)),
         })),
       },
     },

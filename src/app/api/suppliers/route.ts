@@ -21,24 +21,32 @@ export async function GET() {
 
   const balances = new Map<number, number>();
   for (const inv of invoices as any[]) {
-    const paid = (inv.allocations as any[]).reduce((s: number, a: any) => s + Number(a.amount), 0);
+    const paid = (inv.allocations as any[]).reduce(
+      (s: number, a: any) => s + Number(a.amount),
+      0,
+    );
     const bal = Number(inv.total) - paid;
     balances.set(inv.supplierId, (balances.get(inv.supplierId) || 0) + bal);
   }
 
   return NextResponse.json(
-  suppliers.map((s: any) => ({ ...s, balance: Number(balances.get(s.id) || 0) }))
+    suppliers.map((s: any) => ({
+      ...s,
+      balance: Number(balances.get(s.id) || 0),
+    })),
   );
 }
 
 export async function POST(req: Request) {
   const data = await req.json();
-  const supplier = await prisma.supplier.create({ data: {
-    name: data.name,
-    phone: data.phone ?? null,
-    email: data.email ?? null,
-    taxId: data.taxId ?? null,
-    notes: data.notes ?? null,
-  }});
+  const supplier = await prisma.supplier.create({
+    data: {
+      name: data.name,
+      phone: data.phone ?? null,
+      email: data.email ?? null,
+      taxId: data.taxId ?? null,
+      notes: data.notes ?? null,
+    },
+  });
   return NextResponse.json(supplier, { status: 201 });
 }
