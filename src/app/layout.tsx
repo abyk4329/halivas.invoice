@@ -23,9 +23,12 @@ export default function RootLayout({
     <html lang="he" dir="rtl">
       <body className={assistant.className}>
         <header className="appbar">
-          <div className="logo-container">
-            <div className="logo-placeholder"></div>
-            <span>חליווס – מערכת ספקים וחשבוניות</span>
+          <div className="logo-section">
+            <div className="logo-large">ח</div>
+            <div className="logo-text">
+              <h1>חליווס</h1>
+              <p>מערכת ספקים ותשלומים</p>
+            </div>
           </div>
           <nav>
             <a href="/">בית</a>
