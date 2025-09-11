@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={assistant.className}>
         <header className="appbar">
           <div className="logo-section">
-            <div className="logo-large">ח</div>
+            <img src="/halivas-logo.png" alt="HALIVAS Logo" className="logo-image" />
             <div className="logo-text">
               <h1>חליווס</h1>
               <p>מערכת ספקים ותשלומים</p>

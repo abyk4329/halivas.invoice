@@ -60,22 +60,15 @@ header.appbar {
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   text-align: center;
 }
 
-.logo-large {
-  width: 80px;
+.logo-image {
   height: 80px;
-  border-radius: 16px;
-  background: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 40px;
-  box-shadow: var(--shadow-lg);
+  width: auto;
+  object-fit: contain;
+  filter: none;
 }
 
 .logo-text h1 {
@@ -268,10 +261,8 @@ tbody tr:last-child td {
     gap: 12px;
   }
   
-  .logo-large {
-    width: 60px;
+  .logo-image {
     height: 60px;
-    font-size: 30px;
   }
   
   .logo-text h1 {
@@ -316,10 +307,8 @@ tbody tr:last-child td {
     padding: 16px 12px;
   }
   
-  .logo-large {
-    width: 50px;
+  .logo-image {
     height: 50px;
-    font-size: 24px;
   }
   
   .logo-text h1 {
