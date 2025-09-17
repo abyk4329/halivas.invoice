@@ -86,7 +86,12 @@ export default function NewPaymentForm() {
       reset();
       location.reload();
     } else {
-      alert('שגיאה בשמירת תשלום');
+      let msg = 'שגיאה בשמירת תשלום';
+      try {
+        const body = await res.json();
+        if (body?.error) msg = body.error;
+      } catch {}
+      alert(msg);
     }
   };
 

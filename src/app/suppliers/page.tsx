@@ -1,9 +1,20 @@
 import SuppliersForm from './suppliers-form';
+import { headers } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
+
+function getBaseUrl() {
+  const env = process.env.NEXT_PUBLIC_BASE_URL;
+  if (env) return env;
+  const h = headers();
+  const host = h.get('x-forwarded-host') || h.get('host');
+  const proto = h.get('x-forwarded-proto') || 'https';
+  return `${proto}://${host}`;
+}
 
 async function getSuppliers(params: { q?: string; status?: string; subcategory?: string; year?: number } = {}) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    const baseUrl = getBaseUrl();
   const qs = new URLSearchParams();
   if (params.q) qs.set('q', params.q);
   if (params.status) qs.set('status', params.status);

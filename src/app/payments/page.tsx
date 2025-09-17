@@ -1,12 +1,21 @@
 import NewPaymentForm from './payment-form';
 import { Suspense } from 'react';
+import { headers } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
+function getBaseUrl() {
+  const env = process.env.NEXT_PUBLIC_BASE_URL;
+  if (env) return env;
+  const h = headers();
+  const host = h.get('x-forwarded-host') || h.get('host');
+  const proto = h.get('x-forwarded-proto') || 'https';
+  return `${proto}://${host}`;
+}
+
 async function getPayments(params: { year?: number } = {}) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    const baseUrl = getBaseUrl();
   const qs = new URLSearchParams();
   if (params.year) qs.set('year', String(params.year));
   const res = await fetch(`${baseUrl}/api/payments${qs.size ? `?${qs.toString()}` : ''}`, { cache: 'no-store' });

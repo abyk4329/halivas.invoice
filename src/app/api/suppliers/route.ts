@@ -80,15 +80,29 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const data = await req.json();
-  const supplier = await prisma.supplier.create({
-    data: {
-  name: data.name,
-      phone: data.phone ?? null,
-      email: data.email ?? null,
-      taxId: data.taxId ?? null,
-      notes: data.notes ?? null,
-    },
-  });
-  return NextResponse.json(supplier, { status: 201 });
+  try {
+    const data = await req.json();
+    const name = (data.name || '').trim();
+    if (!name) {
+      return NextResponse.json({ error: 'Supplier name is required' }, { status: 400 });
+    }
+    const supplier = await prisma.supplier.create({
+      data: {
+        name,
+        status: 'ACTIVE' as any,
+        category: 'SUPPLIERS' as any,
+        phone: data.phone ?? null,
+        email: data.email ?? null,
+        taxId: data.taxId ?? null,
+        notes: data.notes ?? null,
+      },
+    });
+    return NextResponse.json(supplier, { status: 201 });
+  } catch (err: any) {
+    if (err?.code === 'P2002') {
+      return NextResponse.json({ error: 'שם הספק כבר קיים' }, { status: 409 });
+    }
+    console.error('Failed to create supplier:', err);
+    return NextResponse.json({ error: 'Failed to create supplier' }, { status: 500 });
+  }
 }

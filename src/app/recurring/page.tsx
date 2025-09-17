@@ -1,11 +1,20 @@
 import RecurringForm from './recurring-form';
+import { headers } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
+function getBaseUrl() {
+  const env = process.env.NEXT_PUBLIC_BASE_URL;
+  if (env) return env;
+  const h = headers();
+  const host = h.get('x-forwarded-host') || h.get('host');
+  const proto = h.get('x-forwarded-proto') || 'https';
+  return `${proto}://${host}`;
+}
+
 async function getRecurring() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                   (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    const baseUrl = getBaseUrl();
     const res = await fetch(`${baseUrl}/api/recurring`, { cache: 'no-store' });
     if (!res.ok) return [] as any[];
     return (await res.json()) as any[];
@@ -37,10 +46,9 @@ export default async function RecurringPage() {
                   const now = new Date();
                   const year = now.getFullYear();
                   const month = now.getMonth() + 1;
-                  await fetch(
-                    `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/recurring/generate?year=${year}&month=${month}`,
-                    { method: 'POST' },
-                  );
+                  const base = getBaseUrl();
+                  await fetch(`${base}/api/recurring/generate?year=${year}&month=${month}`,
+                    { method: 'POST' });
                 }}
                 style={{ marginTop: 8 }}
               >

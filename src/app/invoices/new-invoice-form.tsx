@@ -55,7 +55,7 @@ export default function NewInvoiceForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (res.ok) {
+  if (res.ok) {
   const inv = await res.json();
   const totalAmount = total;
       // If TAX_INVOICE_RECEIPT -> go to payments prefilled
@@ -71,7 +71,12 @@ export default function NewInvoiceForm() {
       reset();
       router.refresh();
     } else {
-      alert('שגיאה בשמירת חשבונית');
+      let msg = 'שגיאה בשמירת חשבונית';
+      try {
+        const body = await res.json();
+        if (body?.error) msg = body.error;
+      } catch {}
+      alert(msg);
     }
   };
 

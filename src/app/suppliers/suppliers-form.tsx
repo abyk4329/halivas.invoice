@@ -1,5 +1,6 @@
 'use client';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 
 type FormData = {
   name: string;
@@ -11,19 +12,34 @@ type FormData = {
 
 export default function SuppliersForm() {
   const { register, handleSubmit, reset } = useForm<FormData>();
+  const [saving, setSaving] = useState(false);
 
   const onSubmit = async (data: FormData) => {
-    const res = await fetch('/api/suppliers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) {
-      reset();
-      // refresh list
-      location.reload();
-    } else {
+    try {
+      setSaving(true);
+      const res = await fetch('/api/suppliers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        reset();
+        location.reload();
+      } else {
+        let msg = 'שגיאה בשמירת ספק';
+        try {
+          const body = await res.json();
+          if (body?.error) msg = body.error;
+        } catch (e) {
+          // ignore
+        }
+        alert(msg);
+      }
+    } catch (e: any) {
       alert('שגיאה בשמירת ספק');
+      console.error('Supplier save failed:', e);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -65,8 +81,8 @@ export default function SuppliersForm() {
         </label>
       </div>
       <div>
-        <button className="primary" type="submit">
-          שמירה
+        <button className="primary" type="submit" disabled={saving}>
+          {saving ? 'שומר…' : 'שמירה'}
         </button>
       </div>
     </form>
