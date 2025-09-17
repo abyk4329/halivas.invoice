@@ -588,6 +588,10 @@ tbody tr:last-child td {
   color: var(--color-error);
 }
 
+.text-muted {
+  color: var(--text-muted);
+}
+
 .bg-success {
   background: var(--color-success);
   color: white;
@@ -601,4 +605,308 @@ tbody tr:last-child td {
 .bg-error {
   background: var(--color-error);
   color: white;
+}
+
+/* Suppliers Page Specific Styles */
+.suppliers-page .page-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px 0;
+}
+
+.suppliers-page .page-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.suppliers-page .page-header p {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--text-muted);
+}
+
+.suppliers-layout {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.suppliers-form-section .card {
+  position: sticky;
+  top: 120px;
+}
+
+.suppliers-list-section {
+  min-height: 400px;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.list-header h3 {
+  margin: 0;
+}
+
+.count {
+  background: var(--color-secondary);
+  color: var(--text-muted);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+}
+
+.empty-state p {
+  margin: 8px 0;
+}
+
+/* Desktop Table Styles */
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.suppliers-table {
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+}
+
+.suppliers-table th {
+  background: var(--color-secondary);
+  font-weight: 600;
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.suppliers-table td {
+  padding: 16px 12px;
+  vertical-align: top;
+}
+
+.supplier-name strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.tax-id {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.contact-info {
+  font-size: 0.9rem;
+}
+
+.contact-info .email {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.status-badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.inactive {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.amount {
+  font-weight: 600;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mobile/Tablet Card Styles */
+.suppliers-cards {
+  display: grid;
+  gap: 16px;
+}
+
+.supplier-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--card);
+  transition: all 0.2s ease;
+}
+
+.supplier-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.supplier-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.supplier-card-header h4 {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.supplier-card-content {
+  display: grid;
+  gap: 12px;
+}
+
+.contact-section {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.contact-section div {
+  margin-bottom: 4px;
+}
+
+.financial-section {
+  display: grid;
+  gap: 8px;
+}
+
+.financial-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.financial-item:last-child {
+  border-bottom: none;
+}
+
+.financial-item .label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.financial-item .amount {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Responsive Visibility Classes */
+.desktop-only {
+  display: block;
+}
+
+.mobile-tablet-only {
+  display: none;
+}
+
+/* Tablet Responsive (768px - 1024px) */
+@media (max-width: 1024px) {
+  .suppliers-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .suppliers-form-section .card {
+    position: static;
+  }
+  
+  .suppliers-page .page-header h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Mobile and Tablet Responsive */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-tablet-only {
+    display: block;
+  }
+  
+  .suppliers-layout {
+    gap: 16px;
+  }
+  
+  .suppliers-page .page-header {
+    margin-bottom: 24px;
+    padding: 16px 0;
+  }
+  
+  .suppliers-page .page-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .suppliers-page .page-header p {
+    font-size: 1rem;
+  }
+  
+  .supplier-card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .financial-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .suppliers-page .page-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .suppliers-page .page-header p {
+    font-size: 0.9rem;
+  }
+  
+  .supplier-card {
+    padding: 12px;
+  }
+  
+  .financial-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    text-align: center;
+  }
+  
+  .financial-item .amount {
+    font-size: 1.1rem;
+  }
 }

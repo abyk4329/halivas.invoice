@@ -12,16 +12,10 @@ function getBaseUrl() {
   return `${proto}://${host}`;
 }
 
-async function getSuppliers(params: { q?: string; status?: string; subcategory?: string; year?: number } = {}) {
+async function getSuppliers() {
   try {
     const baseUrl = getBaseUrl();
-  const qs = new URLSearchParams();
-  if (params.q) qs.set('q', params.q);
-  if (params.status) qs.set('status', params.status);
-  if (params.subcategory) qs.set('subcategory', params.subcategory);
-  if (params.year) qs.set('year', String(params.year));
-  const res = await fetch(`${baseUrl}/api/suppliers${qs.size ? `?${qs.toString()}` : ''}`, {
-      // ensure fresh on server
+    const res = await fetch(`${baseUrl}/api/suppliers`, {
       cache: 'no-store',
     });
     if (!res.ok) return [] as any[];
@@ -32,103 +26,154 @@ async function getSuppliers(params: { q?: string; status?: string; subcategory?:
   }
 }
 
-export default async function SuppliersPage({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-  const year = Number(searchParams?.year || new Date().getFullYear());
-  const q = (searchParams?.q as string) || '';
-  const status = (searchParams?.status as string) || '';
-  const subcategory = (searchParams?.subcategory as string) || '';
-  const suppliers = await getSuppliers({ year, q, status, subcategory });
+export default async function SuppliersPage() {
+  const suppliers = await getSuppliers();
+  
   return (
-    <main>
-      <h1>ספקים</h1>
-      <form method="GET" className="card" style={{ marginBottom: 12 }}>
-        <div className="grid cols-3">
-          <label>
-            חיפוש
-            <input name="q" defaultValue={q} placeholder="שם ספק" />
-          </label>
-          <label>
-            סטטוס
-            <select name="status" defaultValue={status}>
-              <option value="">הכל</option>
-              <option value="ACTIVE">פעיל</option>
-              <option value="INACTIVE">לא פעיל</option>
-            </select>
-          </label>
-          <label>
-            תת-קטגוריה
-            <select name="subcategory" defaultValue={subcategory}>
-              <option value="">הכל</option>
-              <option value="MATERIALS">חומרים</option>
-              <option value="SERVICES">שירותים</option>
-              <option value="SOFTWARE_SYSTEMS">מערכות ותוכנות</option>
-              <option value="OFFICE_EQUIPMENT">ציוד ומשרדי</option>
-              <option value="SUBCONTRACTOR">קבלן משנה</option>
-              <option value="MARKETING">שיווק ופרסום</option>
-              <option value="FOOD_BEVERAGE">מזון ומשקאות</option>
-              <option value="ENERGY_INFRA">אנרגיה ותשתיות</option>
-              <option value="PROPERTY_SERVICES">שירותי נכס</option>
-              <option value="MAINTENANCE">תחזוקה</option>
-              <option value="GENERAL">כללי</option>
-              <option value="VEHICLE">רכב</option>
-              <option value="LOGISTICS">הובלות</option>
-            </select>
-          </label>
+    <main className="suppliers-page">
+      <div className="page-header">
+        <h1>ספקים</h1>
+        <p>ניהול מידע ספקים ומעקב יתרות</p>
+      </div>
+
+      <div className="suppliers-layout">
+        {/* הוספת ספק */}
+        <div className="suppliers-form-section">
+          <div className="card">
+            <h3>הוספת ספק חדש</h3>
+            <SuppliersForm />
+          </div>
         </div>
-        <div style={{ marginTop: 8 }}>
-          <button className="primary" type="submit">סינון</button>
-        </div>
-      </form>
-      <div className="grid cols-2">
-        <div className="card">
-          <h3>הוספת ספק</h3>
-          <SuppliersForm />
-        </div>
-        <div className="card">
-          <h3>רשימת ספקים</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>שם</th>
-                <th>טלפון</th>
-                <th>אימייל</th>
-                <th>יתרה</th>
-                <th>שולם השנה</th>
-                <th>הוצאות השנה</th>
-              </tr>
-            </thead>
-            <tbody>
-              {suppliers.map((s: any) => (
-                <tr key={s.id}>
-                  <td>{s.name}</td>
-                  <td>{s.phone || '-'}</td>
-                  <td>{s.email || '-'}</td>
-                  <td>
-                    {(s.balance ?? 0).toLocaleString('he-IL', {
-                      style: 'currency',
-                      currency: 'ILS',
-                    })}
-                  </td>
-                  <td>
-                    {(s.paidThisYear ?? 0).toLocaleString('he-IL', {
-                      style: 'currency',
-                      currency: 'ILS',
-                    })}
-                  </td>
-                  <td>
-                    {(s.expenseThisYear ?? 0).toLocaleString('he-IL', {
-                      style: 'currency',
-                      currency: 'ILS',
-                    })}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+        {/* רשימת ספקים */}
+        <div className="suppliers-list-section">
+          <div className="card">
+            <div className="list-header">
+              <h3>רשימת ספקים</h3>
+              <span className="count">({suppliers.length} ספקים)</span>
+            </div>
+            
+            {suppliers.length === 0 ? (
+              <div className="empty-state">
+                <p>עדיין לא הוספו ספקים למערכת</p>
+                <p className="text-muted">התחילו בהוספת הספק הראשון שלכם</p>
+              </div>
+            ) : (
+              <>
+                {/* תצוגת טבלה למסכים גדולים */}
+                <div className="table-container desktop-only">
+                  <table className="suppliers-table">
+                    <thead>
+                      <tr>
+                        <th>שם הספק</th>
+                        <th>פרטי קשר</th>
+                        <th>סטטוס</th>
+                        <th>יתרה פתוחה</th>
+                        <th>שולם השנה</th>
+                        <th>סה&quot;כ הוצאות</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {suppliers.map((supplier: any) => (
+                        <tr key={supplier.id}>
+                          <td>
+                            <div className="supplier-name">
+                              <strong>{supplier.name}</strong>
+                              {supplier.taxId && (
+                                <small className="tax-id">ח.פ: {supplier.taxId}</small>
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="contact-info">
+                              {supplier.phone && <div>{supplier.phone}</div>}
+                              {supplier.email && <div className="email">{supplier.email}</div>}
+                            </div>
+                          </td>
+                          <td>
+                            <span className={`status-badge ${supplier.status?.toLowerCase()}`}>
+                              {supplier.status === 'ACTIVE' ? 'פעיל' : 'לא פעיל'}
+                            </span>
+                          </td>
+                          <td className="amount">
+                            {(supplier.balance ?? 0).toLocaleString('he-IL', {
+                              style: 'currency',
+                              currency: 'ILS',
+                            })}
+                          </td>
+                          <td className="amount">
+                            {(supplier.paidThisYear ?? 0).toLocaleString('he-IL', {
+                              style: 'currency',
+                              currency: 'ILS',
+                            })}
+                          </td>
+                          <td className="amount">
+                            {(supplier.expenseThisYear ?? 0).toLocaleString('he-IL', {
+                              style: 'currency',
+                              currency: 'ILS',
+                            })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* תצוגת כרטיסים למובייל וטאבלט */}
+                <div className="suppliers-cards mobile-tablet-only">
+                  {suppliers.map((supplier: any) => (
+                    <div key={supplier.id} className="supplier-card">
+                      <div className="supplier-card-header">
+                        <h4>{supplier.name}</h4>
+                        <span className={`status-badge ${supplier.status?.toLowerCase()}`}>
+                          {supplier.status === 'ACTIVE' ? 'פעיל' : 'לא פעיל'}
+                        </span>
+                      </div>
+                      
+                      <div className="supplier-card-content">
+                        {(supplier.phone || supplier.email) && (
+                          <div className="contact-section">
+                            {supplier.phone && <div>📞 {supplier.phone}</div>}
+                            {supplier.email && <div>✉️ {supplier.email}</div>}
+                          </div>
+                        )}
+                        
+                        <div className="financial-section">
+                          <div className="financial-item">
+                            <span className="label">יתרה פתוחה:</span>
+                            <span className="amount">
+                              {(supplier.balance ?? 0).toLocaleString('he-IL', {
+                                style: 'currency',
+                                currency: 'ILS',
+                              })}
+                            </span>
+                          </div>
+                          <div className="financial-item">
+                            <span className="label">שולם השנה:</span>
+                            <span className="amount">
+                              {(supplier.paidThisYear ?? 0).toLocaleString('he-IL', {
+                                style: 'currency',
+                                currency: 'ILS',
+                              })}
+                            </span>
+                          </div>
+                          <div className="financial-item">
+                            <span className="label">סה&quot;כ הוצאות:</span>
+                            <span className="amount">
+                              {(supplier.expenseThisYear ?? 0).toLocaleString('he-IL', {
+                                style: 'currency',
+                                currency: 'ILS',
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </main>
