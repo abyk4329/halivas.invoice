@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'next/navigation';
 
 type Allocation = { invoiceId: number; amount: number };
 type FormData = {
@@ -14,6 +15,7 @@ type FormData = {
 };
 
 export default function NewPaymentForm() {
+  const searchParams = useSearchParams();
   const { register, handleSubmit, watch, setValue, reset } = useForm<FormData>({
     defaultValues: {
       date: new Date().toISOString().slice(0, 10),
@@ -23,6 +25,7 @@ export default function NewPaymentForm() {
   });
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [generalPayment, setGeneralPayment] = useState(false);
 
   const supplierId = watch('supplierId');
   useEffect(() => {
@@ -31,6 +34,19 @@ export default function NewPaymentForm() {
       .then(setSuppliers);
   }, []);
 
+  // Prefill from query params (supplierId, amount, invoiceId)
+  useEffect(() => {
+    const supplierId = Number(searchParams.get('supplierId') || 0);
+    const amount = Number(searchParams.get('amount') || 0);
+    const invoiceId = Number(searchParams.get('invoiceId') || 0);
+    if (supplierId) setValue('supplierId', supplierId as any);
+    if (amount) setValue('amount', amount as any);
+    if (invoiceId) {
+      // We'll auto-allocate after invoices load
+  setGeneralPayment(false);
+    }
+  }, [searchParams, setValue]);
+
   useEffect(() => {
     if (!supplierId) {
       setInvoices([]);
@@ -38,9 +54,27 @@ export default function NewPaymentForm() {
     }
     fetch(`/api/invoices?supplierId=${supplierId}&status=OPEN`)
       .then((r) => r.json())
-      .then(setInvoices);
-    setValue('allocations', []);
-  }, [supplierId, setValue]);
+      .then((list) => {
+        setInvoices(list);
+        const targetInvoiceId = Number(searchParams.get('invoiceId') || 0);
+        const amount = Number(searchParams.get('amount') || 0);
+        if (targetInvoiceId && amount) {
+          // set single allocation to that invoice, capped by its balance
+          const inv = list.find((x: any) => x.id === targetInvoiceId);
+          if (inv) {
+            const paid = (inv.allocations || []).reduce(
+              (s: number, a: any) => s + Number(a.amount),
+              0,
+            );
+            const balance = Math.max(0, Number(inv.total) - paid);
+            const alloc = Math.min(balance, amount);
+            setValue('allocations', [{ invoiceId: inv.id, amount: alloc }]);
+          }
+        } else {
+          setValue('allocations', []);
+        }
+      });
+  }, [supplierId, setValue, searchParams]);
 
   const onSubmit = async (data: FormData) => {
     const res = await fetch('/api/payments', {
@@ -70,6 +104,9 @@ export default function NewPaymentForm() {
     else next.push({ invoiceId, amount: value });
     setValue('allocations', next);
   };
+
+  const method = watch('method');
+  const supplierSelected = !!supplierId;
 
   return (
     <form
@@ -124,6 +161,107 @@ export default function NewPaymentForm() {
           <input {...register('details')} placeholder="פרטי צ׳ק / הערות" />
         </label>
       </div>
+      {method === 'CREDIT_CARD' && (
+        <div className="grid cols-2">
+          <label>
+            מס׳ תשלומים (אשראי)
+            <select onChange={(e) => setValue('details', `תשלומים: ${e.target.value}`)}>
+              {[1,2,3,4,5].map(n => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      )}
+      {method === 'CHECK' && (
+        <div className="grid cols-2">
+          <label>
+            מס׳ צ׳קים
+            <select onChange={(e) => setValue('details', `צ׳קים: ${e.target.value}`)}>
+              {[1,2,3,4,5].map(n => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      )}
+  {supplierSelected && (
+        <div className="card">
+          <div className="grid cols-2" style={{ alignItems: 'center' }}>
+            <b>שיוכים לחשבוניות פתוחות</b>
+            <label style={{ justifySelf: 'end' }}>
+              <input
+                type="checkbox"
+        checked={generalPayment}
+        onChange={(e) => setGeneralPayment(e.target.checked)}
+              />{' '}
+              תשלום כללי ללא שיוך
+            </label>
+          </div>
+      {!generalPayment && (
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th>חשבונית</th>
+                    <th>יתרה</th>
+                    <th>סכום לתשלום</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.map((inv) => {
+                    const balance =
+                      Number(inv.total) -
+                      (inv.allocations || []).reduce(
+                        (s: number, a: any) => s + Number(a.amount),
+                        0,
+                      );
+                    const current =
+                      allocs.find((a) => a.invoiceId === inv.id)?.amount || 0;
+                    return (
+                      <tr key={inv.id}>
+                        <td>{inv.number}</td>
+                        <td>
+                          {balance.toLocaleString('he-IL', {
+                            style: 'currency',
+                            currency: 'ILS',
+                          })}
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={current}
+                            onChange={(e) =>
+                              toggleAlloc(inv.id, Number(e.target.value))
+                            }
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div className="grid cols-2">
+                <div className="card">
+                  סך שיוכים:{' '}
+                  {allocSum.toLocaleString('he-IL', {
+                    style: 'currency',
+                    currency: 'ILS',
+                  })}
+                </div>
+                <div className="card">
+                  סכום תשלום:{' '}
+                  {amount.toLocaleString('he-IL', {
+                    style: 'currency',
+                    currency: 'ILS',
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
       {!!supplierId && (
         <div className="card">
           <b>שיוכים לחשבוניות פתוחות</b>

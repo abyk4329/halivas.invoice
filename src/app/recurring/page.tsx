@@ -1,5 +1,7 @@
 import RecurringForm from './recurring-form';
 
+export const dynamic = 'force-dynamic';
+
 async function getRecurring() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
@@ -22,6 +24,30 @@ export default async function RecurringPage() {
         <div className="card">
           <h3>הוספה</h3>
           <RecurringForm />
+          <div style={{ marginTop: 12 }}>
+            <form
+              action={async () => {
+                'use server';
+              }}
+            >
+              <button
+                className="primary"
+                formAction={async () => {
+                  'use server';
+                  const now = new Date();
+                  const year = now.getFullYear();
+                  const month = now.getMonth() + 1;
+                  await fetch(
+                    `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/recurring/generate?year=${year}&month=${month}`,
+                    { method: 'POST' },
+                  );
+                }}
+                style={{ marginTop: 8 }}
+              >
+                יצירת חיובי חודש
+              </button>
+            </form>
+          </div>
         </div>
         <div className="card">
           <h3>רשימה</h3>

@@ -1,10 +1,13 @@
+export const dynamic = 'force-dynamic';
 import NewInvoiceForm from './new-invoice-form';
 
-async function getInvoices() {
+async function getInvoices(params: { year?: number } = {}) {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
                    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
-    const res = await fetch(`${baseUrl}/api/invoices`, { cache: 'no-store' });
+  const qs = new URLSearchParams();
+  if (params.year) qs.set('year', String(params.year));
+  const res = await fetch(`${baseUrl}/api/invoices${qs.size ? `?${qs.toString()}` : ''}`, { cache: 'no-store' });
     if (!res.ok) return [] as any[];
     return (await res.json()) as any[];
   } catch (error) {
@@ -14,7 +17,8 @@ async function getInvoices() {
 }
 
 export default async function InvoicesPage() {
-  const invoices = await getInvoices();
+  const year = new Date().getFullYear();
+  const invoices = await getInvoices({ year });
   return (
     <main>
       <h1>חשבוניות</h1>

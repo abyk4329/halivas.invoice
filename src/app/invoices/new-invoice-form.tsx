@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 type Line = { description: string; qty: number; unitPrice: number };
 type FormData = {
@@ -8,25 +9,37 @@ type FormData = {
   number: string;
   date: string;
   vatRate: number;
+  type: 'INVOICE' | 'TAX_INVOICE' | 'TAX_INVOICE_RECEIPT' | 'CREDIT';
+  category: 'REGULAR' | 'FX' | 'DIRECT_DEBIT' | 'AUTHORITIES';
   lines: Line[];
 };
 
 export default function NewInvoiceForm() {
-  const { register, control, handleSubmit, watch, reset } = useForm<FormData>({
+  const router = useRouter();
+  const { register, control, handleSubmit, watch, reset, setValue, getValues } = useForm<FormData>({
     defaultValues: {
       vatRate: 0.17,
       date: new Date().toISOString().slice(0, 10),
+      type: 'INVOICE',
+      category: 'REGULAR',
       lines: [{ description: '', qty: 1, unitPrice: 0 }],
     },
   });
   const { fields, append, remove } = useFieldArray({ control, name: 'lines' });
   const [suppliers, setSuppliers] = useState<any[]>([]);
+  const [supplierQuery, setSupplierQuery] = useState('');
 
   useEffect(() => {
     fetch('/api/suppliers')
       .then((r) => r.json())
       .then(setSuppliers);
   }, []);
+
+  const filteredSuppliers = useMemo(() => {
+    const q = supplierQuery.trim().toLowerCase();
+    if (!q) return suppliers;
+    return suppliers.filter((s) => s.name.toLowerCase().includes(q));
+  }, [supplierQuery, suppliers]);
 
   const values = watch();
   const subtotal = (values.lines || []).reduce(
@@ -43,8 +56,20 @@ export default function NewInvoiceForm() {
       body: JSON.stringify(data),
     });
     if (res.ok) {
+  const inv = await res.json();
+  const totalAmount = total;
+      // If TAX_INVOICE_RECEIPT -> go to payments prefilled
+      if (data.type === 'TAX_INVOICE_RECEIPT') {
+        const params = new URLSearchParams({
+          supplierId: String(data.supplierId),
+          amount: String(total),
+          invoiceId: String(inv.id),
+        });
+        router.push(`/payments?${params.toString()}`);
+        return;
+      }
       reset();
-      location.reload();
+      router.refresh();
     } else {
       alert('שגיאה בשמירת חשבונית');
     }
@@ -56,17 +81,51 @@ export default function NewInvoiceForm() {
       className="grid"
       style={{ gap: 12 }}
     >
-      <label>
-        ספק
-        <select {...register('supplierId', { valueAsNumber: true })}>
-          <option value="">בחר ספק…</option>
-          {suppliers.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="grid cols-2">
+        <label>
+          ספק
+          <select {...register('supplierId', { valueAsNumber: true })}>
+            <option value="">בחר ספק…</option>
+            {filteredSuppliers.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          חיפוש ספק / יצירה מהירה
+          <div className="grid cols-2" style={{ gap: 8 }}>
+            <input
+              value={supplierQuery}
+              onChange={(e) => setSupplierQuery(e.target.value)}
+              placeholder="הקלד שם ספק…"
+            />
+            <button
+              type="button"
+              onClick={async () => {
+                const name = supplierQuery.trim();
+                if (!name) return;
+                const res = await fetch('/api/suppliers', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name }),
+                });
+                if (res.ok) {
+                  const s = await res.json();
+                  setSuppliers((prev) => [...prev, s]);
+                  setValue('supplierId', s.id);
+                  setSupplierQuery('');
+                } else {
+                  alert('שגיאה ביצירת ספק');
+                }
+              }}
+            >
+              יצירת ספק חדש
+            </button>
+          </div>
+        </label>
+      </div>
       <div className="grid cols-2">
         <label>
           מס׳ חשבונית
@@ -75,6 +134,26 @@ export default function NewInvoiceForm() {
         <label>
           תאריך
           <input type="date" {...register('date')} />
+        </label>
+      </div>
+      <div className="grid cols-2">
+        <label>
+          סוג מסמך
+          <select {...register('type')}>
+            <option value="INVOICE">חשבונית</option>
+            <option value="TAX_INVOICE">חשבונית מס</option>
+            <option value="TAX_INVOICE_RECEIPT">חשבונית מס קבלה</option>
+            <option value="CREDIT">חשבונית זיכוי</option>
+          </select>
+        </label>
+        <label>
+          קטגוריה
+          <select {...register('category')}>
+            <option value="REGULAR">רגיל</option>
+            <option value="FX">מט&quot;ח</option>
+            <option value="DIRECT_DEBIT">הוראת קבע</option>
+            <option value="AUTHORITIES">רשויות</option>
+          </select>
         </label>
       </div>
       <div className="card">

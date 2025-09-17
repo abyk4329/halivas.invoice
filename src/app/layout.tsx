@@ -32,6 +32,7 @@ export default function RootLayout({
           </div>
           <nav>
             <a href="/">בית</a>
+            <a href="/dashboard">לוח בקרה</a>
             <a href="/suppliers">ספקים</a>
             <a href="/invoices">חשבוניות</a>
             <a href="/payments">תשלומים</a>

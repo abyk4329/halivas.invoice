@@ -7,37 +7,97 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enums reflecting business domain
+enum SupplierStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SupplierCategory {
+  SUPPLIERS       // ספקים קבועים
+  ADHOC           // ספק מזדמן
+  DIRECT_DEBIT    // הוראת קבע
+  AUTHORITIES     // רשויות
+  FX              // מט"ח
+}
+
+enum SupplierSubcategory {
+  MATERIALS           // חומרים
+  SERVICES            // שירותים
+  SOFTWARE_SYSTEMS    // מערכות ותוכנות
+  OFFICE_EQUIPMENT    // ציוד ומשרדי
+  SUBCONTRACTOR       // קבלן משנה
+  MARKETING           // שיווק ופרסום
+  FOOD_BEVERAGE       // מזון ומשקאות
+  ENERGY_INFRA        // אנרגיה ותשתיות
+  PROPERTY_SERVICES   // שירותי נכס
+  MAINTENANCE         // תחזוקה
+  GENERAL             // כללי
+  VEHICLE             // רכב
+  LOGISTICS           // הובלות
+}
+
+enum InvoiceType {
+  INVOICE              // חשבונית רגילה
+  TAX_INVOICE          // חשבונית מס
+  TAX_INVOICE_RECEIPT  // חשבונית מס קבלה
+  CREDIT               // חשבונית זיכוי
+}
+
+enum InvoiceCategory {
+  REGULAR
+  FX
+  DIRECT_DEBIT
+  AUTHORITIES
+}
+
+enum PaymentMethod {
+  CASH
+  CHECK
+  CREDIT_CARD
+  BANK_TRANSFER
+  BIT
+  DIRECT_DEBIT
+}
+
 model Supplier {
-  id        Int       @id @default(autoincrement())
-  name      String
-  phone     String?
-  email     String?
-  taxId     String?
-  notes     String?
-  invoices  Invoice[]
-  payments  Payment[]
+  id         Int                @id @default(autoincrement())
+  name       String             @unique
+  status     SupplierStatus     @default(ACTIVE)
+  category   SupplierCategory   @default(SUPPLIERS)
+  subcategory SupplierSubcategory?
+  contact    String?
+  phone      String?
+  email      String?
+  taxId      String?
+  notes      String?
+  invoices   Invoice[]
+  payments   Payment[]
   recurringExpenses RecurringExpense[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
 }
 
 model Invoice {
-  id           Int              @id @default(autoincrement())
+  id           Int               @id @default(autoincrement())
   supplierId   Int
-  number       String           // מספר חשבונית/חשבונית מס/קבלה
-  type         String           @default("INVOICE") // INVOICE | TAX_INVOICE | RECEIPT | CREDIT
+  number       String            // אסמכתא/מספר חשבונית
+  type         InvoiceType       @default(INVOICE)
+  category     InvoiceCategory   @default(REGULAR)
   date         DateTime
   dueDate      DateTime?
-  currency     String           @default("ILS")
-  subtotal     Decimal          @default(0)
-  vat          Decimal          @default(0)
-  total        Decimal          @default(0)
-  status       String           @default("OPEN") // OPEN | PARTIALLY_PAID | PAID | CANCELED
+  currency     String            @default("ILS")
+  subtotal     Decimal           @default(0)
+  vat          Decimal           @default(0)
+  total        Decimal           @default(0)
+  status       String            @default("OPEN") // OPEN | PARTIALLY_PAID | PAID | CANCELED
+  reference    String?
+  description  String?
   lines        InvoiceLine[]
   allocations  PaymentAllocation[]
-  supplier     Supplier         @relation(fields: [supplierId], references: [id])
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  supplier     Supplier          @relation(fields: [supplierId], references: [id])
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
 
 model InvoiceLine {
@@ -51,17 +111,17 @@ model InvoiceLine {
 }
 
 model Payment {
-  id           Int       @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   supplierId   Int
   date         DateTime
-  method       String   // CASH | CHECK | CREDIT_CARD | BANK_TRANSFER
+  method       PaymentMethod
   amount       Decimal
-  currency     String     @default("ILS")
-  reference    String?    // צ'ק: מספרים; אשראי: מס' עסקאות; מזומן: תיאור
+  currency     String         @default("ILS")
+  reference    String?        // פרטי אסמכתא
   details      String?
   allocations  PaymentAllocation[]
-  supplier     Supplier   @relation(fields: [supplierId], references: [id])
-  createdAt    DateTime   @default(now())
+  supplier     Supplier       @relation(fields: [supplierId], references: [id])
+  createdAt    DateTime       @default(now())
 }
 
 model PaymentAllocation {
@@ -73,16 +133,26 @@ model PaymentAllocation {
   invoice    Invoice @relation(fields: [invoiceId], references: [id])
 }
 
+enum RecurrenceFrequency {
+  MONTHLY
+  BIMONTHLY
+  QUARTERLY
+  SEMIANNUAL
+  ANNUAL
+}
+
 model RecurringExpense {
-  id          Int       @id @default(autoincrement())
+  id          Int                 @id @default(autoincrement())
   supplierId  Int
   title       String
   amount      Decimal
-  dayOfMonth  Int       // חיוב חודשי ביום X
-  active      Boolean   @default(true)
+  dayOfMonth  Int                 // חיוב חודשי ביום X
+  frequency   RecurrenceFrequency @default(MONTHLY)
+  fixedCategory SupplierCategory  @default(DIRECT_DEBIT) // DIRECT_DEBIT or AUTHORITIES
+  active      Boolean             @default(true)
   notes       String?
-  supplier    Supplier  @relation(fields: [supplierId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  supplier    Supplier            @relation(fields: [supplierId], references: [id])
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 }
 

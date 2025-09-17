@@ -3,27 +3,65 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const status = url.searchParams.get('status') as any | null;
+  const status = url.searchParams.get('status');
   const supplierId = url.searchParams.get('supplierId');
+  const category = url.searchParams.get('category');
+  const yearParam = url.searchParams.get('year');
+  const monthParam = url.searchParams.get('month');
   const where: any = {};
-  if (status) where.status = status;
+  if (status) where.status = status as any;
   if (supplierId) where.supplierId = Number(supplierId);
+  if (category) where.category = category as any;
+  if (yearParam) {
+    const y = Number(yearParam);
+    const start = new Date(Date.UTC(y, 0, 1));
+    const end = new Date(Date.UTC(y + 1, 0, 1));
+    where.date = { gte: start, lt: end };
+  }
+  if (monthParam && yearParam) {
+    const y = Number(yearParam);
+    const m = Number(monthParam) - 1;
+    const start = new Date(Date.UTC(y, m, 1));
+    const end = new Date(Date.UTC(y, m + 1, 1));
+    where.date = { gte: start, lt: end };
+  }
 
   const invoices = await prisma.invoice.findMany({
     where,
     include: { supplier: true, allocations: true },
     orderBy: { date: 'desc' },
   });
-  // compute balance per invoice
-  const withBalance = (invoices as any[]).map((inv: any) => {
+  // compute balance and derived fields
+  const hebrewMonths = [
+    'ינואר',
+    'פברואר',
+    'מרץ',
+    'אפריל',
+    'מאי',
+    'יוני',
+    'יולי',
+    'אוגוסט',
+    'ספטמבר',
+    'אוקטובר',
+    'נובמבר',
+    'דצמבר',
+  ];
+  const withDerived = (invoices as any[]).map((inv: any) => {
     const paid = (inv.allocations as any[]).reduce(
       (s: number, a: any) => s + Number(a.amount),
       0,
     );
-    const balance = Number(inv.total) - paid;
-    return { ...inv, paid, balance } as any;
+    const balance = Math.round((Number(inv.total) - paid) * 100) / 100;
+    const d = new Date(inv.date);
+    const year = d.getUTCFullYear();
+    const month = d.getUTCMonth() + 1;
+    const monthName = hebrewMonths[month - 1];
+    let st = 'OPEN';
+    if (balance <= 0) st = 'PAID';
+    else if (paid > 0) st = 'PARTIALLY_PAID';
+    return { ...inv, paid, balance, year, month, monthName, status: st } as any;
   });
-  return NextResponse.json(withBalance);
+  return NextResponse.json(withDerived);
 }
 
 export async function POST(req: Request) {
@@ -46,6 +84,7 @@ export async function POST(req: Request) {
       supplierId: data.supplierId,
       number: data.number,
       type: data.type ?? 'INVOICE',
+  category: data.category ?? 'REGULAR',
       date: new Date(data.date),
       dueDate: data.dueDate ? new Date(data.dueDate) : null,
       currency: data.currency || 'ILS',

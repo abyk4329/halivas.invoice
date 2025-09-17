@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET() {
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const yearParam = url.searchParams.get('year');
+  const where: any = {};
+  if (yearParam) {
+    const y = Number(yearParam);
+    const start = new Date(Date.UTC(y, 0, 1));
+    const end = new Date(Date.UTC(y + 1, 0, 1));
+    where.date = { gte: start, lt: end };
+  }
   const payments = await prisma.payment.findMany({
+    where,
     include: { supplier: true, allocations: { include: { invoice: true } } },
     orderBy: { date: 'desc' },
   });
@@ -95,7 +105,7 @@ export async function POST(req: Request) {
         (s: number, x: any) => s + Number(x.amount),
         0,
       );
-      const balance = Number(inv.total) - paid;
+  const balance = Math.round((Number(inv.total) - paid) * 100) / 100;
       await prisma.invoice.update({
         where: { id: inv.id },
         data: {
