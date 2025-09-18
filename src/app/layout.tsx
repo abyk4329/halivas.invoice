@@ -12,31 +12,19 @@ export const metadata: Metadata = {
   description: 'מעצבים לכם את הבית - מערכת ניהול ספקים, חשבוניות ותשלומים',
   manifest: '/manifest.json',
   keywords: ['ספקים', 'חשבוניות', 'תשלומים', 'ניהול עסק', 'חליווס'],
-  icons: [
-    { rel: 'icon', url: '/favicon.ico', sizes: '32x32' },
-    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
-    { rel: 'apple-touch-icon', url: '/favicon.svg', sizes: '180x180' }
-  ],
   openGraph: {
     title: 'חליווס | מעצבים לכם את הבית',
     description: 'מערכת ניהול ספקים',
     type: 'website',
     locale: 'he_IL',
     siteName: 'חליווס',
-    images: [
-      {
-        url: '/HalivasBrand.png',
-        width: 1200,
-        height: 630,
-        alt: 'חליווס – מעצבים לכם את הבית',
-      }
-    ],
+  images: [],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'חליווס | מעצבים לכם את הבית',
     description: 'מערכת ניהול ספקים',
-    images: ['/HalivasBrand.png'],
+  images: [],
   },
   appleWebApp: {
     capable: true,

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Create Favicon</title>
+    <style>
+        canvas { border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="32" height="32"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Background
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(0, 0, 32, 32);
+        
+        // Text
+        ctx.fillStyle = '#373737';
+        ctx.font = 'bold 8px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('HALI', 16, 12);
+        ctx.fillText('VAS', 16, 22);
+        
+        // Convert to ICO would require external tool
+        console.log('Canvas ready for conversion to ICO');
+    </script>
+</body>
+</html>

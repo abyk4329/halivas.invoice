@@ -40,6 +40,6 @@ npm run dev
 ## הערות
 
 - פלט צבעים סופי/עיצוב ניתן לעדכן ב־`src/app/globals.css`
-- לוגו: `HalivasBrand.png` – אפשר להחליף את `public/favicon.svg`
+ 
 - סכמה: `prisma/schema.prisma`
 - Runtime DB selection: בקוד יש העדפה ל־`NEON_LOCAL_URL` אם מוגדר, אחרת `DATABASE_URL`.

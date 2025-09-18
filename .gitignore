@@ -19,3 +19,8 @@ pnpm-debug.log*
 # prisma
 prisma/dev.db*
 .vercel
+
+# icons
+public/favicon.ico
+public/favicon.svg
+public/HBiconfavicon.svg
