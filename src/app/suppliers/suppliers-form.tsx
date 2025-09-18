@@ -165,8 +165,18 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           סוג
           <select {...register('type')} defaultValue={initialData?.type || ""}>
             <option value="">בחר סוג</option>
+            <option value="INTERNET">אינטרנט</option>
+            <option value="SECURITY">ביטחון</option>
+            <option value="FUEL">דלק</option>
+            <option value="DIRECT_DEBIT">הוראת קבע</option>
+            <option value="ELECTRICITY">חשמל</option>
+            <option value="STATIONARY">כלי כתיבה</option>
+            <option value="WATER">מים</option>
+            <option value="MUNICIPAL_TAXES">מסי עירייה</option>
             <option value="FX">מט&quot;ח</option>
-            <option value="REGULAR">רגיל</option>
+            <option value="CLEANING">ניקיון</option>
+            <option value="OFFICE_RENT">שכר דירה משרד</option>
+            <option value="PROFESSIONAL_SERVICES">שירותי מקצוע</option>
           </select>
         </label>
       </div>
@@ -177,11 +187,11 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           אופן תשלום
           <select {...register('paymentMethod')} defaultValue={initialData?.paymentMethod || ""}>
             <option value="">בחר אופן תשלום</option>
-            <option value="BANK_TRANSFER">העברה בנקאית</option>
-            <option value="BIT">ביט</option>
-            <option value="CASH">מזומן</option>
-            <option value="CHECK">צ&apos;ק</option>
             <option value="CREDIT_CARD">כרטיס אשראי</option>
+            <option value="BANK_TRANSFER">העברה בנקאית</option>
+            <option value="CASH">מזומן</option>
+            <option value="BIT">ביט</option>
+            <option value="CHECK">צ&apos;ק</option>
           </select>
         </label>
       </div>

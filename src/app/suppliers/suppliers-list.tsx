@@ -63,16 +63,19 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
       case 'STATIONARY': return 'כלי כתיבה';
       case 'WATER': return 'מים';
       case 'OFFICE_RENT': return 'שכר דירה משרד';
+      case 'DIRECT_DEBIT': return 'הוראת קבע';
+      case 'FX': return 'מט״ח';
       default: return type || '-';
     }
   };
 
   const getPaymentMethodLabel = (method: string) => {
     switch (method) {
+      case 'CREDIT_CARD': return 'כרטיס אשראי';
       case 'BANK_TRANSFER': return 'העברה בנקאית';
-      case 'CREDIT': return 'אשראי';
       case 'CASH': return 'מזומן';
-      case 'CHECK': return 'המחאה';
+      case 'BIT': return 'ביט';
+      case 'CHECK': return 'צ\'ק';
       default: return method || '-';
     }
   };
