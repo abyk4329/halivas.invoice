@@ -54,10 +54,11 @@ main {
 /* Clean header with glass effect */
 header.appbar {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
+  gap: 20px;
   background: var(--glass-bg);
-  padding: 20px 32px;
+  padding: 24px 32px;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -68,16 +69,13 @@ header.appbar {
 }
 
 .logo-section {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .logo-image {
-  height: 60px;
+  height: 80px;
   width: auto;
   object-fit: contain;
   filter: none;
@@ -88,6 +86,7 @@ nav {
   display: flex;
   gap: 12px;
   align-items: center;
+  justify-content: center;
 }
 
 nav a {
@@ -1334,11 +1333,12 @@ tbody tr:last-child td {
   html { font-size: 15px; }
   
   header.appbar {
-    padding: 16px 24px;
+    padding: 20px 24px;
+    gap: 18px;
   }
   
   .logo-image {
-    height: 55px;
+    height: 75px;
   }
   
   nav a {
@@ -1368,19 +1368,16 @@ tbody tr:last-child td {
   html { font-size: 14px; }
   
   header.appbar {
-    padding: 12px 16px;
-    flex-direction: column;
+    padding: 16px;
     gap: 16px;
   }
   
   .logo-section {
-    position: static;
-    transform: none;
     order: 1;
   }
   
   .logo-image {
-    height: 50px;
+    height: 65px;
   }
   
   nav {
