@@ -568,6 +568,27 @@ tbody tr:last-child td {
   color: var(--text-light);
 }
 
+.navigation-back-center {
+  text-align: center;
+  margin: 24px 0;
+}
+
+.back-link-text {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+.back-link-text:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
 .form-container {
   max-width: 600px;
   margin: 0 auto;
