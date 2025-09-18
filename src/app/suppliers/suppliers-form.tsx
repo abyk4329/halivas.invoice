@@ -122,18 +122,6 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
         </label>
       </div>
 
-      {/* הערות */}
-      <div className="form-group">
-        <label>
-          הערות
-          <textarea 
-            {...register('notes')} 
-            placeholder=""
-            rows={2}
-          />
-        </label>
-      </div>
-
       {/* קטגוריה */}
       <div className="form-group">
         <label>
@@ -202,6 +190,18 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
             <option value="BI_MONTHLY">דו-חודשי</option>
             <option value="YEARLY">שנתי</option>
           </select>
+        </label>
+      </div>
+
+      {/* הערות */}
+      <div className="form-group">
+        <label>
+          הערות
+          <textarea 
+            {...register('notes')} 
+            placeholder=""
+            rows={2}
+          />
         </label>
       </div>
 
