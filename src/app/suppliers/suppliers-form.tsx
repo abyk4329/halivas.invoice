@@ -134,6 +134,31 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
         </label>
       </div>
 
+      {/* תת קטגוריה */}
+      <div className="form-group">
+        <label>
+          תת קטגוריה
+          <select {...register('subcategory')} defaultValue={initialData?.subcategory || ""}>
+            <option value="">בחר תת קטגוריה</option>
+            <option value="RAW_MATERIALS">חומר גלם ופירזול</option>
+            <option value="PAINT_SERVICES">שירותי צבע</option>
+            <option value="TRANSPORTATION">הובלה</option>
+            <option value="ASSEMBLY">הרכבה</option>
+            <option value="SOFTWARE_IT">תוכנות ומיחשוב</option>
+            <option value="MAINTENANCE">תחזוקה</option>
+            <option value="AUTHORITIES">רשויות</option>
+            <option value="COMMUNICATION">תקשורת</option>
+            <option value="OFFICE">משרדי</option>
+            <option value="FOOD">מזון</option>
+            <option value="CLOTHING">ביגוד</option>
+            <option value="VEHICLE">רכב</option>
+            <option value="EQUIPMENT_PURCHASE">רכישת ציוד</option>
+            <option value="OTHER_SERVICES">שירותים אחרים</option>
+            <option value="SUBCONTRACTOR">קבלנות משנה</option>
+          </select>
+        </label>
+      </div>
+
       {/* סטטוס (רק במצב עריכה) */}
       {isEdit && (
         <div className="form-group">

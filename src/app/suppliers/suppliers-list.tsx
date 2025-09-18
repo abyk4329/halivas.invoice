@@ -51,6 +51,27 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
     }
   };
 
+  const getSubcategoryLabel = (subcategory: string) => {
+    switch (subcategory) {
+      case 'RAW_MATERIALS': return 'חומר גלם ופירזול';
+      case 'PAINT_SERVICES': return 'שירותי צבע';
+      case 'TRANSPORTATION': return 'הובלה';
+      case 'ASSEMBLY': return 'הרכבה';
+      case 'SOFTWARE_IT': return 'תוכנות ומיחשוב';
+      case 'MAINTENANCE': return 'תחזוקה';
+      case 'AUTHORITIES': return 'רשויות';
+      case 'COMMUNICATION': return 'תקשורת';
+      case 'OFFICE': return 'משרדי';
+      case 'FOOD': return 'מזון';
+      case 'CLOTHING': return 'ביגוד';
+      case 'VEHICLE': return 'רכב';
+      case 'EQUIPMENT_PURCHASE': return 'רכישת ציוד';
+      case 'OTHER_SERVICES': return 'שירותים אחרים';
+      case 'SUBCONTRACTOR': return 'קבלנות משנה';
+      default: return subcategory || '-';
+    }
+  };
+
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'REGULAR': return 'רגיל';
@@ -130,6 +151,8 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
           </div>
           <div className="supplier-details">
             <span className="detail">{getCategoryLabel(supplier.category)}</span>
+            <span className="separator">•</span>
+            <span className="detail">{getSubcategoryLabel(supplier.subcategory)}</span>
             <span className="separator">•</span>
             <span className="detail">{getTypeLabel(supplier.type)}</span>
             <span className="separator">•</span>
@@ -288,6 +311,7 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
               <th>שם ספק</th>
               <th>פרטי קשר</th>
               <th>קטגוריה</th>
+              <th>תת קטגוריה</th>
               <th>סוג</th>
               <th>אופן תשלום</th>
               <th>תנאי תשלום</th>
@@ -315,6 +339,7 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
                   </button>
                 </td>
                 <td>{getCategoryLabel(supplier.category)}</td>
+                <td>{getSubcategoryLabel(supplier.subcategory)}</td>
                 <td>{getTypeLabel(supplier.type)}</td>
                 <td>{getPaymentMethodLabel(supplier.paymentMethod)}</td>
                 <td>{getPaymentTermsLabel(supplier.paymentTerms)}</td>
@@ -368,6 +393,11 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
               <div className="info-row">
                 <span className="label">קטגוריה:</span>
                 <span>{getCategoryLabel(supplier.category)}</span>
+              </div>
+              
+              <div className="info-row">
+                <span className="label">תת קטגוריה:</span>
+                <span>{getSubcategoryLabel(supplier.subcategory)}</span>
               </div>
               
               <div className="info-row">
