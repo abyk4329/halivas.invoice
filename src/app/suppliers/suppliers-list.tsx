@@ -47,6 +47,8 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
     switch (category) {
       case 'PERMANENT': return 'ספק קבוע';
       case 'OCCASIONAL': return 'ספק מזדמן';
+      case 'SUPPLIERS': return 'ספק קבוע'; // backward compatibility
+      case 'ADHOC': return 'ספק מזדמן'; // backward compatibility
       default: return category || '-';
     }
   };
@@ -58,16 +60,30 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
       case 'TRANSPORTATION': return 'הובלה';
       case 'ASSEMBLY': return 'הרכבה';
       case 'SOFTWARE_IT': return 'תוכנות ומיחשוב';
-      case 'MAINTENANCE': return 'תחזוקה';
+      case 'MAINTENANCE_NEW': return 'תחזוקה';
       case 'AUTHORITIES': return 'רשויות';
       case 'COMMUNICATION': return 'תקשורת';
       case 'OFFICE': return 'משרדי';
       case 'FOOD': return 'מזון';
       case 'CLOTHING': return 'ביגוד';
-      case 'VEHICLE': return 'רכב';
+      case 'VEHICLE_NEW': return 'רכב';
       case 'EQUIPMENT_PURCHASE': return 'רכישת ציוד';
       case 'OTHER_SERVICES': return 'שירותים אחרים';
-      case 'SUBCONTRACTOR': return 'קבלנות משנה';
+      case 'SUBCONTRACTOR_NEW': return 'קבלנות משנה';
+      // backward compatibility
+      case 'MATERIALS': return 'חומרים';
+      case 'SERVICES': return 'שירותים';
+      case 'SOFTWARE_SYSTEMS': return 'מערכות ותוכנות';
+      case 'OFFICE_EQUIPMENT': return 'ציוד ומשרדי';
+      case 'SUBCONTRACTOR': return 'קבלן משנה';
+      case 'MARKETING': return 'שיווק ופרסום';
+      case 'FOOD_BEVERAGE': return 'מזון ומשקאות';
+      case 'ENERGY_INFRA': return 'אנרגיה ותשתיות';
+      case 'PROPERTY_SERVICES': return 'שירותי נכס';
+      case 'MAINTENANCE': return 'תחזוקה';
+      case 'GENERAL': return 'כללי';
+      case 'VEHICLE': return 'רכב';
+      case 'LOGISTICS': return 'הובלות';
       default: return subcategory || '-';
     }
   };
@@ -75,6 +91,9 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'REGULAR': return 'רגיל';
+      case 'FX_TYPE': return 'מט״ח';
+      case 'DIRECT_DEBIT_TYPE': return 'הוראת קבע';
+      // backward compatibility
       case 'FX': return 'מט״ח';
       case 'DIRECT_DEBIT': return 'הוראת קבע';
       default: return type || '-';

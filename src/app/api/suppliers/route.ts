@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   const subcategory = url.searchParams.get('subcategory');
 
   const where: any = {
-    category: 'SUPPLIERS',
+    // Remove category filter to allow all suppliers
   };
   if (q) where.name = { contains: q, mode: 'insensitive' };
   if (status) where.status = status as any;
@@ -30,20 +30,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'שם ספק הוא שדה חובה' }, { status: 400 });
     }
     
+    const supplierData: any = {
+      name,
+      status: (data.status as any) || 'ACTIVE',
+      category: (data.category as any) || 'PERMANENT',
+      subcategory: data.subcategory as any || null,
+      contact: data.contact || null,
+      phone: data.phone || null,
+      email: data.email || null,
+      taxId: data.taxId || null,
+      address: data.address || null,
+      notes: data.notes || null,
+    };
+
+    // Add optional fields if they exist in the schema
+    if (data.type) supplierData.type = data.type as any;
+    if (data.paymentMethod) supplierData.paymentMethod = data.paymentMethod as any;
+    if (data.paymentTerms) supplierData.paymentTerms = data.paymentTerms as any;
+
     const supplier = await prisma.supplier.create({
-      data: {
-        name,
-        status: (data.status as any) || 'ACTIVE',
-        category: (data.category as any) || 'SUPPLIERS',
-        subcategory: data.subcategory as any || null,
-        contact: data.contact || null,
-        phone: data.phone || null,
-        email: data.email || null,
-        taxId: data.taxId || null,
-        notes: data.notes || null,
-        // Note: type and paymentMethod are not part of Supplier schema
-        // They might be used for invoices/payments created later
-      },
+      data: supplierData,
     });
     return NextResponse.json(supplier, { status: 201 });
   } catch (err: any) {

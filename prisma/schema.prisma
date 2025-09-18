@@ -14,27 +14,61 @@ enum SupplierStatus {
 }
 
 enum SupplierCategory {
-  SUPPLIERS       // ספקים קבועים
-  ADHOC           // ספק מזדמן
-  DIRECT_DEBIT    // הוראת קבע
-  AUTHORITIES     // רשויות
-  FX              // מט"ח
+  SUPPLIERS       // ספקים קבועים (ישן)
+  ADHOC           // ספק מזדמן (ישן)
+  DIRECT_DEBIT    // הוראת קבע (ישן)
+  AUTHORITIES     // רשויות (ישן)
+  FX              // מט"ח (ישן)
+  PERMANENT       // ספק קבוע (חדש)
+  OCCASIONAL      // ספק מזדמן (חדש)
+}
+
+enum SupplierType {
+  REGULAR         // רגיל
+  FX_TYPE         // מט"ח
+  DIRECT_DEBIT_TYPE    // הוראת קבע
+}
+
+enum PaymentTerms {
+  IMMEDIATE       // מיידי
+  YEARLY          // שנתי
+  MONTHLY         // חודשי
+  BI_MONTHLY      // דו-חודשי
+  PARTNER_30      // שותף+30
+  PARTNER_60      // שותף+60
+  PARTNER_90      // שותף+90
+  PARTNER_120     // שותף+120
 }
 
 enum SupplierSubcategory {
-  MATERIALS           // חומרים
-  SERVICES            // שירותים
-  SOFTWARE_SYSTEMS    // מערכות ותוכנות
-  OFFICE_EQUIPMENT    // ציוד ומשרדי
-  SUBCONTRACTOR       // קבלן משנה
-  MARKETING           // שיווק ופרסום
-  FOOD_BEVERAGE       // מזון ומשקאות
-  ENERGY_INFRA        // אנרגיה ותשתיות
-  PROPERTY_SERVICES   // שירותי נכס
-  MAINTENANCE         // תחזוקה
-  GENERAL             // כללי
-  VEHICLE             // רכב
-  LOGISTICS           // הובלות
+  MATERIALS           // חומרים (ישן)
+  SERVICES            // שירותים (ישן)
+  SOFTWARE_SYSTEMS    // מערכות ותוכנות (ישן)
+  OFFICE_EQUIPMENT    // ציוד ומשרדי (ישן)
+  SUBCONTRACTOR       // קבלן משנה (ישן)
+  MARKETING           // שיווק ופרסום (ישן)
+  FOOD_BEVERAGE       // מזון ומשקאות (ישן)
+  ENERGY_INFRA        // אנרגיה ותשתיות (ישן)
+  PROPERTY_SERVICES   // שירותי נכס (ישן)
+  MAINTENANCE         // תחזוקה (ישן)
+  GENERAL             // כללי (ישן)
+  VEHICLE             // רכב (ישן)
+  LOGISTICS           // הובלות (ישן)
+  RAW_MATERIALS       // חומר גלם ופירזול (חדש)
+  PAINT_SERVICES      // שירותי צבע (חדש)
+  TRANSPORTATION      // הובלה (חדש)
+  ASSEMBLY            // הרכבה (חדש)
+  SOFTWARE_IT         // תוכנות ומיחשוב (חדש)
+  MAINTENANCE_NEW     // תחזוקה (חדש)
+  AUTHORITIES         // רשויות (חדש)
+  COMMUNICATION       // תקשורת (חדש)
+  OFFICE              // משרדי (חדש)
+  FOOD                // מזון (חדש)
+  CLOTHING            // ביגוד (חדש)
+  VEHICLE_NEW         // רכב (חדש)
+  EQUIPMENT_PURCHASE  // רכישת ציוד (חדש)
+  OTHER_SERVICES      // שירותים אחרים (חדש)
+  SUBCONTRACTOR_NEW   // קבלנות משנה (חדש)
 }
 
 enum InvoiceType {
@@ -61,21 +95,25 @@ enum PaymentMethod {
 }
 
 model Supplier {
-  id         Int                @id @default(autoincrement())
-  name       String             @unique
-  status     SupplierStatus     @default(ACTIVE)
-  category   SupplierCategory   @default(SUPPLIERS)
-  subcategory SupplierSubcategory?
-  contact    String?
-  phone      String?
-  email      String?
-  taxId      String?
-  notes      String?
-  invoices   Invoice[]
-  payments   Payment[]
+  id            Int                     @id @default(autoincrement())
+  name          String                  @unique
+  status        SupplierStatus          @default(ACTIVE)
+  category      SupplierCategory        @default(PERMANENT)
+  subcategory   SupplierSubcategory?
+  type          SupplierType?
+  paymentMethod PaymentMethod?
+  paymentTerms  PaymentTerms?
+  contact       String?
+  phone         String?
+  email         String?
+  taxId         String?
+  address       String?
+  notes         String?
+  invoices      Invoice[]
+  payments      Payment[]
   recurringExpenses RecurringExpense[]
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
 }
 
 model Invoice {
@@ -148,7 +186,7 @@ model RecurringExpense {
   amount      Decimal
   dayOfMonth  Int                 // חיוב חודשי ביום X
   frequency   RecurrenceFrequency @default(MONTHLY)
-  fixedCategory SupplierCategory  @default(DIRECT_DEBIT) // DIRECT_DEBIT or AUTHORITIES
+  fixedCategory SupplierCategory  @default(SUPPLIERS) // SUPPLIERS or other existing values
   active      Boolean             @default(true)
   notes       String?
   supplier    Supplier            @relation(fields: [supplierId], references: [id])

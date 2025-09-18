@@ -128,7 +128,7 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           קטגוריה
           <select {...register('category')} defaultValue={initialData?.category || ""}>
             <option value="">בחר קטגוריה</option>
-            <option value="REGULAR">ספק קבוע</option>
+            <option value="PERMANENT">ספק קבוע</option>
             <option value="OCCASIONAL">ספק מזדמן</option>
           </select>
         </label>
@@ -145,16 +145,16 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
             <option value="TRANSPORTATION">הובלה</option>
             <option value="ASSEMBLY">הרכבה</option>
             <option value="SOFTWARE_IT">תוכנות ומיחשוב</option>
-            <option value="MAINTENANCE">תחזוקה</option>
+            <option value="MAINTENANCE_NEW">תחזוקה</option>
             <option value="AUTHORITIES">רשויות</option>
             <option value="COMMUNICATION">תקשורת</option>
             <option value="OFFICE">משרדי</option>
             <option value="FOOD">מזון</option>
             <option value="CLOTHING">ביגוד</option>
-            <option value="VEHICLE">רכב</option>
+            <option value="VEHICLE_NEW">רכב</option>
             <option value="EQUIPMENT_PURCHASE">רכישת ציוד</option>
             <option value="OTHER_SERVICES">שירותים אחרים</option>
-            <option value="SUBCONTRACTOR">קבלנות משנה</option>
+            <option value="SUBCONTRACTOR_NEW">קבלנות משנה</option>
           </select>
         </label>
       </div>
@@ -179,8 +179,8 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           <select {...register('type')} defaultValue={initialData?.type || ""}>
             <option value="">בחר סוג</option>
             <option value="REGULAR">רגיל</option>
-            <option value="FX">מט&quot;ח</option>
-            <option value="DIRECT_DEBIT">הוראת קבע</option>
+            <option value="FX_TYPE">מט&quot;ח</option>
+            <option value="DIRECT_DEBIT_TYPE">הוראת קבע</option>
           </select>
         </label>
       </div>
@@ -207,13 +207,13 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           <select {...register('paymentTerms')} defaultValue={initialData?.paymentTerms || ""}>
             <option value="">בחר תנאי תשלום</option>
             <option value="IMMEDIATE">מיידי</option>
+            <option value="YEARLY">שנתי</option>
+            <option value="MONTHLY">חודשי</option>
+            <option value="BI_MONTHLY">דו-חודשי</option>
             <option value="PARTNER_30">שותף+30</option>
             <option value="PARTNER_60">שותף+60</option>
             <option value="PARTNER_90">שותף+90</option>
             <option value="PARTNER_120">שותף+120</option>
-            <option value="MONTHLY">חודשי</option>
-            <option value="BI_MONTHLY">דו-חודשי</option>
-            <option value="YEARLY">שנתי</option>
           </select>
         </label>
       </div>
