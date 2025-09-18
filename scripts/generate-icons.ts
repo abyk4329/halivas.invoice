@@ -12,7 +12,7 @@ import sharp from 'sharp';
 const ROOT = path.resolve(process.cwd());
 const PUBLIC = path.join(ROOT, 'public');
 
-const sizes = [180, 192, 256, 384, 512];
+const sizes = [120, 152, 167, 180, 192, 256, 384, 512];
 
 // Simple glass background SVG generator
 function glassBgSVG(size: number) {
@@ -64,7 +64,12 @@ async function main() {
       .png()
       .toBuffer();
 
-    const outName = size === 180 ? 'apple-touch-icon.png' : `icon-${size}.png`;
+  let outName: string;
+  if (size === 180) outName = 'apple-touch-icon.png';
+  else if (size === 120) outName = 'apple-touch-icon-120x120.png';
+  else if (size === 152) outName = 'apple-touch-icon-152x152.png';
+  else if (size === 167) outName = 'apple-touch-icon-167x167.png';
+  else outName = `icon-${size}.png`;
     await sharp(composed)
       .png({ compressionLevel: 9, adaptiveFiltering: true })
       .toFile(path.join(PUBLIC, outName));
