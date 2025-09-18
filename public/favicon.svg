@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#f8f9fa"/>
+  <text x="100" y="80" font-family="Assistant, sans-serif" font-size="32" font-weight="300" text-anchor="middle" fill="#373737">HALI</text>
+  <text x="100" y="120" font-family="Assistant, sans-serif" font-size="32" font-weight="700" text-anchor="middle" fill="#373737">VAS</text>
+  <text x="100" y="150" font-family="Assistant, sans-serif" font-size="12" font-weight="400" text-anchor="middle" fill="#6c757d">BRAND</text>
+</svg>

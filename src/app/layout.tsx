@@ -11,7 +11,11 @@ export const metadata: Metadata = {
   title: 'חליווס – מערכת ספקים וחשבוניות',
   description: 'ניהול חשבוניות, ספקים ותשלומים לבית העסק חליווס',
   manifest: '/manifest.json',
-  icons: [{ rel: 'icon', url: '/favicon.svg' }],
+  icons: [
+    { rel: 'icon', url: '/favicon.ico', sizes: '32x32' },
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    { rel: 'apple-touch-icon', url: '/favicon.svg', sizes: '180x180' }
+  ],
 };
 
 export default function RootLayout({
