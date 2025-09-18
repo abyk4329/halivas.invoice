@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={assistant.className}>
         <header className="appbar">
           <div className="logo-section">
-            <img src="/halivas-logo.png" alt="HALIVAS Logo" className="logo-image" />
+            <img src="/HalivasBrand.png" alt="HALIVAS Logo" className="logo-image" />
           </div>
           <nav>
             <a href="/">בית</a>
