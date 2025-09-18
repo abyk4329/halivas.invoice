@@ -1,6 +1,7 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 type FormData = {
   name: string;
@@ -8,6 +9,7 @@ type FormData = {
   contact?: string;
   phone?: string;
   email?: string;
+  address?: string;
   notes?: string;
   category?: string;
   subcategory?: string;
@@ -26,6 +28,7 @@ interface SuppliersFormProps {
 export default function SuppliersForm({ initialData, isEdit = false, supplierId }: SuppliersFormProps) {
   const { register, handleSubmit, reset, setValue } = useForm<FormData>();
   const [saving, setSaving] = useState(false);
+  const router = useRouter();
 
   // Set initial values for edit mode
   useEffect(() => {
@@ -55,7 +58,7 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           reset();
         }
         // Redirect to suppliers list page after successful save
-        window.location.href = '/suppliers';
+        router.push('/suppliers');
       } else {
         let msg = isEdit ? 'שגיאה בעדכון ספק' : 'שגיאה בשמירת ספק';
         try {
@@ -122,11 +125,19 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
         </label>
       </div>
 
+      {/* כתובת */}
+      <div className="form-group">
+        <label>
+          כתובת
+          <input {...register('address')} placeholder="" />
+        </label>
+      </div>
+
       {/* קטגוריה */}
       <div className="form-group">
         <label>
           קטגוריה
-          <select {...register('category')} defaultValue={initialData?.category || ""}>
+          <select {...register('category')}>
             <option value="">בחר קטגוריה</option>
             <option value="PERMANENT">ספק קבוע</option>
             <option value="OCCASIONAL">ספק מזדמן</option>
@@ -138,7 +149,7 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
       <div className="form-group">
         <label>
           תת קטגוריה
-          <select {...register('subcategory')} defaultValue={initialData?.subcategory || ""}>
+          <select {...register('subcategory')}>
             <option value="">בחר תת קטגוריה</option>
             <option value="RAW_MATERIALS">חומר גלם ופירזול</option>
             <option value="PAINT_SERVICES">שירותי צבע</option>
@@ -164,7 +175,7 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
         <div className="form-group">
           <label>
             סטטוס
-            <select {...register('status')} defaultValue={initialData?.status || "ACTIVE"}>
+            <select {...register('status')}>
               <option value="ACTIVE">פעיל</option>
               <option value="INACTIVE">לא פעיל</option>
             </select>
@@ -176,7 +187,7 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
       <div className="form-group">
         <label>
           סוג
-          <select {...register('type')} defaultValue={initialData?.type || ""}>
+          <select {...register('type')}>
             <option value="">בחר סוג</option>
             <option value="REGULAR">רגיל</option>
             <option value="FX_TYPE">מט&quot;ח</option>
@@ -189,7 +200,7 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
       <div className="form-group">
         <label>
           אופן תשלום
-          <select {...register('paymentMethod')} defaultValue={initialData?.paymentMethod || ""}>
+          <select {...register('paymentMethod')}>
             <option value="">בחר אופן תשלום</option>
             <option value="CREDIT_CARD">כרטיס אשראי</option>
             <option value="BANK_TRANSFER">העברה בנקאית</option>
@@ -204,7 +215,7 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
       <div className="form-group">
         <label>
           תנאי תשלום
-          <select {...register('paymentTerms')} defaultValue={initialData?.paymentTerms || ""}>
+          <select {...register('paymentTerms')}>
             <option value="">בחר תנאי תשלום</option>
             <option value="IMMEDIATE">מיידי</option>
             <option value="YEARLY">שנתי</option>

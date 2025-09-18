@@ -36,19 +36,27 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       return NextResponse.json({ error: 'שם ספק הוא שדה חובה' }, { status: 400 });
     }
 
+    const updateData: any = {
+      name,
+      status: (data.status as any) || 'ACTIVE',
+      category: (data.category as any) || 'PERMANENT',
+      subcategory: data.subcategory as any || null,
+      contact: data.contact || null,
+      phone: data.phone || null,
+      email: data.email || null,
+      taxId: data.taxId || null,
+      address: data.address || null,
+      notes: data.notes || null,
+    };
+
+    // Add optional fields if they exist
+    if (data.type) updateData.type = data.type as any;
+    if (data.paymentMethod) updateData.paymentMethod = data.paymentMethod as any;
+    if (data.paymentTerms) updateData.paymentTerms = data.paymentTerms as any;
+
     const supplier = await prisma.supplier.update({
       where: { id },
-      data: {
-        name,
-        status: (data.status as any) || 'ACTIVE',
-        category: (data.category as any) || 'SUPPLIERS',
-        subcategory: data.subcategory as any || null,
-        contact: data.contact || null,
-        phone: data.phone || null,
-        email: data.email || null,
-        taxId: data.taxId || null,
-        notes: data.notes || null,
-      },
+      data: updateData,
     });
 
     return NextResponse.json(supplier);
