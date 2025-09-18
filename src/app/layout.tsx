@@ -15,9 +15,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/HBiconfavicon.svg', type: 'image/svg+xml' },
+  { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+  { url: '/icon-512.png', type: 'image/png', sizes: '512x512' },
     ],
     apple: [
-      { url: '/HBdesktopiconandfavicon.png', sizes: '180x180', type: 'image/png' },
+  { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
     shortcut: ['/HBiconfavicon.svg'],
   },

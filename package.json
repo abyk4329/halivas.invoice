@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev -p 3005",
-  "build": "next build",
+    "dev": "next dev -p 3005",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
@@ -13,7 +13,8 @@
     "prisma:studio": "prisma studio",
     "test": "vitest",
     "postinstall": "prisma generate",
-    "build:prod": "prisma migrate deploy && next build"
+    "build:prod": "prisma migrate deploy && next build",
+    "generate:icons": "ts-node scripts/generate-icons.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",
@@ -34,6 +35,8 @@
     "eslint-config-next": "^14.2.5",
     "prettier": "^3.3.2",
     "prisma": "^5.18.0",
+    "sharp": "^0.34.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "vercel": "^47.1.2",
     "vitest": "^2.0.5"
