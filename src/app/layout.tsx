@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description: 'מעצבים לכם את הבית - מערכת ניהול ספקים, חשבוניות ותשלומים',
   manifest: '/manifest.json',
   keywords: ['ספקים', 'חשבוניות', 'תשלומים', 'ניהול עסק', 'חליווס'],
+  themeColor: '#373737',
   icons: {
     icon: [
       { url: '/HBiconfavicon.svg', type: 'image/svg+xml' },
@@ -42,7 +43,8 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+  // Use translucent so the page background shows through the iOS status bar
+  statusBarStyle: 'black-translucent',
     title: 'חליווס',
   },
 };
@@ -55,6 +57,8 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <body className={assistant.className}>
+  {/* iOS status bar safe-area with footer/chrome color */}
+  <div className="ios-statusbar" />
         <header className="appbar">
           <div className="logo-section">
             <img src="/HalivasBrand.png" alt="HALIVAS Logo" className="logo-image" />
