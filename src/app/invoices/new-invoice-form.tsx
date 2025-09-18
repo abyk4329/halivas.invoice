@@ -104,7 +104,7 @@ export default function NewInvoiceForm() {
             <input
               value={supplierQuery}
               onChange={(e) => setSupplierQuery(e.target.value)}
-              placeholder="הקלד שם ספק…"
+              placeholder=""
             />
             <button
               type="button"
@@ -173,7 +173,7 @@ export default function NewInvoiceForm() {
                 תיאור
                 <input
                   {...register(`lines.${idx}.description` as const)}
-                  placeholder="פירוט"
+                  placeholder=""
                 />
               </label>
               <label>

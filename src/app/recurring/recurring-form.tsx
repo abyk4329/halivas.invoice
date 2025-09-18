@@ -58,7 +58,7 @@ export default function RecurringForm() {
         כותרת
         <input
           {...register('title', { required: true })}
-          placeholder="לדוגמה: בזק"
+          placeholder=""
         />
       </label>
       <div className="grid cols-3">

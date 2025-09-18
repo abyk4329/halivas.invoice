@@ -1,60 +1,61 @@
-import Link from 'next/link';
+import { headers } from 'next/headers';
+import DashboardStats from './dashboard-stats';
+import DashboardCharts from './dashboard-charts';
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+
+function getBaseUrl() {
+  const env = process.env.NEXT_PUBLIC_BASE_URL;
+  if (env) return env;
+  const h = headers();
+  const host = h.get('x-forwarded-host') || h.get('host');
+  const proto = h.get('x-forwarded-proto') || 'https';
+  return `${proto}://${host}`;
+}
+
+async function getDashboardData() {
+  try {
+    const baseUrl = getBaseUrl();
+    const [suppliersRes, paymentsRes, invoicesRes] = await Promise.all([
+      fetch(`${baseUrl}/api/suppliers`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/api/payments?year=${new Date().getFullYear()}`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/api/invoices?year=${new Date().getFullYear()}`, { cache: 'no-store' })
+    ]);
+
+    const [suppliers, payments, invoices] = await Promise.all([
+      suppliersRes.ok ? suppliersRes.json() : [],
+      paymentsRes.ok ? paymentsRes.json() : [],
+      invoicesRes.ok ? invoicesRes.json() : []
+    ]);
+
+    return { suppliers, payments, invoices };
+  } catch (error) {
+    console.error('Failed to fetch dashboard data:', error);
+    return { suppliers: [], payments: [], invoices: [] };
+  }
+}
+
+export default async function Home() {
+  const { suppliers, payments, invoices } = await getDashboardData();
+  
   return (
-    <main>
-      <div className="hero-section">
-        <div className="hero-content">
-          <h1 className="hero-title">מערכת ניהול חליווס</h1>
-          <p className="hero-subtitle">פלטפורמה מתקדמת לניהול ספקים, חשבוניות ותשלומים</p>
-        </div>
+    <main className="dashboard-page">
+      <div className="dashboard-header">
+        <h1>לוח בקרה</h1>
+        <p>סקירה כללית של מערכת חליווס</p>
       </div>
-      
-      <div className="features-grid">
-        <Link href="/suppliers" className="feature-card">
-          <div className="feature-icon suppliers"></div>
-          <div className="feature-content">
-            <h3 className="feature-title">ספקים</h3>
-            <p className="feature-description">ניהול מקצועי של פרטי ספקים ומעקב יתרות פתוחות</p>
-          </div>
-          <div className="feature-action">צפה בספקים</div>
-        </Link>
-        
-        <Link href="/invoices" className="feature-card">
-          <div className="feature-icon invoices"></div>
-          <div className="feature-content">
-            <h3 className="feature-title">חשבוניות</h3>
-            <p className="feature-description">יצירת חשבוניות דיגיטליות ומעקב סטטוס תשלומים</p>
-          </div>
-          <div className="feature-action">נהל חשבוניות</div>
-        </Link>
-        
-        <Link href="/payments" className="feature-card">
-          <div className="feature-icon payments"></div>
-          <div className="feature-content">
-            <h3 className="feature-title">תשלומים</h3>
-            <p className="feature-description">רישום תשלומים, שיוך לחשבוניות ודוחות מפורטים</p>
-          </div>
-          <div className="feature-action">רשום תשלום</div>
-        </Link>
-      </div>
-      
-      <div className="secondary-grid">
-        <Link href="/recurring" className="secondary-card">
-          <div className="secondary-content">
-            <h4 className="secondary-title">הוצאות קבועות</h4>
-            <p className="secondary-description">ניהול אוטומטי של הוצאות חודשיות ותזכורות</p>
-          </div>
-        </Link>
-        
-        <div className="secondary-card premium">
-          <div className="secondary-content">
-            <h4 className="secondary-title">דוחות ואנליטיקה</h4>
-            <p className="secondary-description">תובנות עסקיות מתקדמות ודוחות מפורטים</p>
-            <span className="premium-badge">בקרוב</span>
-          </div>
-        </div>
-      </div>
+
+      <DashboardStats 
+        suppliers={suppliers}
+        payments={payments}
+        invoices={invoices}
+      />
+
+      <DashboardCharts 
+        suppliers={suppliers}
+        payments={payments}
+        invoices={invoices}
+      />
     </main>
   );
 }

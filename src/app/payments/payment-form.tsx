@@ -158,12 +158,12 @@ export default function NewPaymentForm() {
           ייחוס
           <input
             {...register('reference')}
-            placeholder="מס׳ צ׳ק / מספר עסקאות"
+            placeholder=""
           />
         </label>
         <label>
           פרטים
-          <input {...register('details')} placeholder="פרטי צ׳ק / הערות" />
+          <input {...register('details')} placeholder="" />
         </label>
       </div>
       {method === 'CREDIT_CARD' && (
