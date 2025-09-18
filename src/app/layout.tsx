@@ -17,7 +17,7 @@ export const metadata: Metadata = {
       { url: '/HBiconfavicon.svg', type: 'image/svg+xml' },
     ],
     apple: [
-      { url: '/HBiconfavicon.svg', type: 'image/svg+xml' },
+      { url: '/HBdesktopiconandfavicon.png', sizes: '180x180', type: 'image/png' },
     ],
     shortcut: ['/HBiconfavicon.svg'],
   },
