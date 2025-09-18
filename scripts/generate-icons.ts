@@ -47,8 +47,8 @@ async function main() {
   const masterBg = Buffer.from(glassBgSVG(masterSize));
   const masterBgPng = await sharp(masterBg).png().toBuffer();
 
-  // Scale glyph to ~88% of canvas to nearly fill icon
-  const glyphMax = Math.round(masterSize * 0.88);
+  // Scale glyph to ~95% of canvas to fill icon more completely
+  const glyphMax = Math.round(masterSize * 0.95);
   const glyphPng = await sharp(glyphSvg)
     .resize({ width: glyphMax, height: glyphMax, fit: 'inside' })
     .png()
