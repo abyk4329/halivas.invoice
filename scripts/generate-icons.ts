@@ -42,35 +42,40 @@ async function main() {
   const glyphSvgPath = path.join(PUBLIC, 'HBiconfavicon.svg');
   const glyphSvg = await fs.readFile(glyphSvgPath);
 
+  // 1) Render a large 1024x1024 master (for crisp downscales)
+  const masterSize = 1024;
+  const masterBg = Buffer.from(glassBgSVG(masterSize));
+  const masterBgPng = await sharp(masterBg).png().toBuffer();
+
+  // Scale glyph to ~88% of canvas to nearly fill icon
+  const glyphMax = Math.round(masterSize * 0.88);
+  const glyphPng = await sharp(glyphSvg)
+    .resize({ width: glyphMax, height: glyphMax, fit: 'inside' })
+    .png()
+    .toBuffer();
+
+  const composedMaster = await sharp(masterBgPng)
+    .composite([
+      {
+        input: glyphPng,
+        top: Math.round((masterSize - glyphMax) / 2),
+        left: Math.round((masterSize - glyphMax) / 2),
+      },
+    ])
+    .png()
+    .toBuffer();
+
+  // 2) Downscale to targets using high-quality resampling
   for (const size of sizes) {
-    const bgSvg = Buffer.from(glassBgSVG(size));
+    let outName: string;
+    if (size === 180) outName = 'apple-touch-icon.png';
+    else if (size === 120) outName = 'apple-touch-icon-120x120.png';
+    else if (size === 152) outName = 'apple-touch-icon-152x152.png';
+    else if (size === 167) outName = 'apple-touch-icon-167x167.png';
+    else outName = `icon-${size}.png`;
 
-    // Render background to PNG
-    const bgPng = await sharp(bgSvg).png().toBuffer();
-
-    // Render glyph to transparent PNG, scaled to fit ~60% of canvas
-    const glyphMax = Math.round(size * 0.6);
-    const glyphPng = await sharp(glyphSvg).resize({ width: glyphMax, height: glyphMax, fit: 'inside' }).png().toBuffer();
-
-    // Composite centered
-    const composed = await sharp(bgPng)
-      .composite([
-        {
-          input: glyphPng,
-          top: Math.round((size - glyphMax) / 2),
-          left: Math.round((size - glyphMax) / 2),
-        },
-      ])
-      .png()
-      .toBuffer();
-
-  let outName: string;
-  if (size === 180) outName = 'apple-touch-icon.png';
-  else if (size === 120) outName = 'apple-touch-icon-120x120.png';
-  else if (size === 152) outName = 'apple-touch-icon-152x152.png';
-  else if (size === 167) outName = 'apple-touch-icon-167x167.png';
-  else outName = `icon-${size}.png`;
-    await sharp(composed)
+    await sharp(composedMaster)
+      .resize({ width: size, height: size, fit: 'cover', kernel: sharp.kernel.lanczos3 })
       .png({ compressionLevel: 9, adaptiveFiltering: true })
       .toFile(path.join(PUBLIC, outName));
   }
@@ -80,7 +85,7 @@ async function main() {
     .png()
     .toFile(path.join(PUBLIC, 'icon-512-maskable.png'));
 
-  console.log('Icons generated:', sizes);
+  console.log('Icons generated (from 1024 master):', sizes);
 }
 
 main().catch((e) => {

@@ -36,10 +36,14 @@ body {
   scroll-behavior: smooth;
 }
 
-/* iOS status bar safe-area strip */
+/* iOS status bar safe-area strip with glassmorphism */
 .ios-statusbar {
   height: env(safe-area-inset-top);
-  background: var(--footer);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
 * {
