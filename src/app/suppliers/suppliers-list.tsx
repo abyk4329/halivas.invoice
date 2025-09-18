@@ -128,14 +128,32 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
   // חלוקת ספקים לקטגוריות וסידור לפי פעילות
   const categorizeAndSortSuppliers = () => {
     // הוספת כמות חשבוניות לכל ספק (נתון דמה - בפועל יגיע מה-API)
+    // נרמול קטגוריות ישנות לחדשות כדי שלא יאבדו ברשימה
+    const normalizeCategory = (category: string | undefined | null) => {
+      switch (category) {
+        case 'SUPPLIERS':
+          return 'PERMANENT';
+        case 'ADHOC':
+          return 'OCCASIONAL';
+        // קטגוריות ישנות נוספות – משייכים לקבוע כברירת מחדל
+        case 'FX':
+        case 'DIRECT_DEBIT':
+        case 'AUTHORITIES':
+          return 'PERMANENT';
+        default:
+          return category || 'PERMANENT';
+      }
+    };
+
     const suppliersWithActivity = suppliers.map(supplier => ({
       ...supplier,
-      invoiceCount: Math.floor(Math.random() * 50) // נתון זמני - צריך להחליף בנתון אמיתי
+      category: normalizeCategory(supplier.category),
+      invoiceCount: Math.floor(Math.random() * 50), // נתון זמני - צריך להחליף בנתון אמיתי
     }));
 
     // חלוקה לקטגוריות
-    const permanent = suppliersWithActivity.filter(s => s.category === 'PERMANENT');
-    const occasional = suppliersWithActivity.filter(s => s.category === 'OCCASIONAL');
+  const permanent = suppliersWithActivity.filter(s => s.category === 'PERMANENT');
+  const occasional = suppliersWithActivity.filter(s => s.category === 'OCCASIONAL');
 
     // סידור לפי כמות חשבוניות (יורד)
     const sortByActivity = (arr: any[]) => arr.sort((a, b) => b.invoiceCount - a.invoiceCount);
