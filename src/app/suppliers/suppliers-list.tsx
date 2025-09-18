@@ -53,18 +53,9 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'CLEANING': return 'ניקיון';
-      case 'ELECTRICITY': return 'חשמל';
-      case 'PROFESSIONAL_SERVICES': return 'שירותי מקצוע';
-      case 'FUEL': return 'דלק';
-      case 'MUNICIPAL_TAXES': return 'מסי עירייה';
-      case 'INTERNET': return 'אינטרנט';
-      case 'SECURITY': return 'ביטחון';
-      case 'STATIONARY': return 'כלי כתיבה';
-      case 'WATER': return 'מים';
-      case 'OFFICE_RENT': return 'שכר דירה משרד';
-      case 'DIRECT_DEBIT': return 'הוראת קבע';
+      case 'REGULAR': return 'רגיל';
       case 'FX': return 'מט״ח';
+      case 'DIRECT_DEBIT': return 'הוראת קבע';
       default: return type || '-';
     }
   };
