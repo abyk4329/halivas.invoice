@@ -11,6 +11,13 @@
   "theme_color": "#373737",
   "categories": ["business", "finance", "productivity"],
   "scope": "/",
-  "icons": [],
+  "icons": [
+    {
+      "src": "/HBiconfavicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ],
   "screenshots": []
 }

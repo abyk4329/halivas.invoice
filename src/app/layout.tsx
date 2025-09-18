@@ -12,6 +12,15 @@ export const metadata: Metadata = {
   description: 'מעצבים לכם את הבית - מערכת ניהול ספקים, חשבוניות ותשלומים',
   manifest: '/manifest.json',
   keywords: ['ספקים', 'חשבוניות', 'תשלומים', 'ניהול עסק', 'חליווס'],
+  icons: {
+    icon: [
+      { url: '/HBiconfavicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/HBiconfavicon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: ['/HBiconfavicon.svg'],
+  },
   openGraph: {
     title: 'חליווס | מעצבים לכם את הבית',
     description: 'מערכת ניהול ספקים',
