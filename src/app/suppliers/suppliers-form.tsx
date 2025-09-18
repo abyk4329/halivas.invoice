@@ -140,34 +140,8 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           קטגוריה
           <select {...register('category')} defaultValue={initialData?.category || ""}>
             <option value="">בחר קטגוריה</option>
-            <option value="SUPPLIERS">ספק קבוע</option>
-            <option value="ADHOC">ספק מזדמן</option>
-            <option value="DIRECT_DEBIT">הוראת קבע</option>
-            <option value="AUTHORITIES">רשויות</option>
-            <option value="FX">מט&quot;ח</option>
-          </select>
-        </label>
-      </div>
-
-      {/* תת-קטגוריה */}
-      <div className="form-group">
-        <label>
-          תת-קטגוריה
-          <select {...register('subcategory')} defaultValue={initialData?.subcategory || ""}>
-            <option value="">בחר תת-קטגוריה</option>
-            <option value="MATERIALS">חומרי גלם ופרזול</option>
-            <option value="SERVICES">שירותי צבע</option>
-            <option value="SOFTWARE_SYSTEMS">שירותי הרכבה</option>
-            <option value="LOGISTICS">הובלות</option>
-            <option value="ENERGY_INFRA">תשתיות</option>
-            <option value="AUTHORITIES">רשויות</option>
-            <option value="VEHICLE">רכב</option>
-            <option value="OFFICE_EQUIPMENT">משרדי</option>
-            <option value="FOOD_BEVERAGE">אוכל ושתייה</option>
-            <option value="GENERAL">שירותים מזדמנים</option>
-            <option value="SOFTWARE_SYSTEMS">תוכנות ומיחשוב</option>
-            <option value="MAINTENANCE">תחזוקה</option>
-            <option value="SUBCONTRACTOR">קבלן משנה</option>
+            <option value="REGULAR">ספק קבוע</option>
+            <option value="OCCASIONAL">ספק מזדמן</option>
           </select>
         </label>
       </div>
@@ -191,9 +165,8 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           סוג
           <select {...register('type')} defaultValue={initialData?.type || ""}>
             <option value="">בחר סוג</option>
-            <option value="DIRECT_DEBIT">הוראת קבע</option>
-            <option value="REGULAR">רגיל</option>
             <option value="FX">מט&quot;ח</option>
+            <option value="REGULAR">רגיל</option>
           </select>
         </label>
       </div>
@@ -204,12 +177,11 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           אופן תשלום
           <select {...register('paymentMethod')} defaultValue={initialData?.paymentMethod || ""}>
             <option value="">בחר אופן תשלום</option>
-            <option value="CREDIT_CARD">כרטיס אשראי</option>
             <option value="BANK_TRANSFER">העברה בנקאית</option>
+            <option value="BIT">ביט</option>
             <option value="CASH">מזומן</option>
             <option value="CHECK">צ&apos;ק</option>
-            <option value="BIT">ביט</option>
-            <option value="DIRECT_DEBIT">הוראת קבע</option>
+            <option value="CREDIT_CARD">כרטיס אשראי</option>
           </select>
         </label>
       </div>
@@ -221,13 +193,13 @@ export default function SuppliersForm({ initialData, isEdit = false, supplierId 
           <select {...register('paymentTerms')} defaultValue={initialData?.paymentTerms || ""}>
             <option value="">בחר תנאי תשלום</option>
             <option value="IMMEDIATE">מיידי</option>
-            <option value="NET_7">שב׳ 7</option>
-            <option value="NET_14">שב׳ 14</option>
-            <option value="NET_30">שב׳ 30</option>
-            <option value="NET_45">שב׳ 45</option>
-            <option value="NET_60">שב׳ 60</option>
-            <option value="NET_90">שב׳ 90</option>
+            <option value="PARTNER_30">שותף+30</option>
+            <option value="PARTNER_60">שותף+60</option>
+            <option value="PARTNER_90">שותף+90</option>
+            <option value="PARTNER_120">שותף+120</option>
             <option value="MONTHLY">חודשי</option>
+            <option value="BI_MONTHLY">דו-חודשי</option>
+            <option value="YEARLY">שנתי</option>
           </select>
         </label>
       </div>

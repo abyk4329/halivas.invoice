@@ -42,6 +42,55 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
     setContactModalOpen(null);
   };
 
+  // פונקציות עזר להצגת נתונים בעברית
+  const getCategoryLabel = (category: string) => {
+    switch (category) {
+      case 'PERMANENT': return 'ספק קבוע';
+      case 'OCCASIONAL': return 'ספק מזדמן';
+      default: return category || '-';
+    }
+  };
+
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'CLEANING': return 'ניקיון';
+      case 'ELECTRICITY': return 'חשמל';
+      case 'PROFESSIONAL_SERVICES': return 'שירותי מקצוע';
+      case 'FUEL': return 'דלק';
+      case 'MUNICIPAL_TAXES': return 'מסי עירייה';
+      case 'INTERNET': return 'אינטרנט';
+      case 'SECURITY': return 'ביטחון';
+      case 'STATIONARY': return 'כלי כתיבה';
+      case 'WATER': return 'מים';
+      case 'OFFICE_RENT': return 'שכר דירה משרד';
+      default: return type || '-';
+    }
+  };
+
+  const getPaymentMethodLabel = (method: string) => {
+    switch (method) {
+      case 'BANK_TRANSFER': return 'העברה בנקאית';
+      case 'CREDIT': return 'אשראי';
+      case 'CASH': return 'מזומן';
+      case 'CHECK': return 'המחאה';
+      default: return method || '-';
+    }
+  };
+
+  const getPaymentTermsLabel = (terms: string) => {
+    switch (terms) {
+      case 'IMMEDIATE': return 'מיידי';
+      case 'PARTNER_30': return 'שותף+30';
+      case 'PARTNER_60': return 'שותף+60';
+      case 'PARTNER_90': return 'שותף+90';
+      case 'PARTNER_120': return 'שותף+120';
+      case 'MONTHLY': return 'חודשי';
+      case 'BI_MONTHLY': return 'דו-חודשי';
+      case 'ANNUAL': return 'שנתי';
+      default: return terms || '-';
+    }
+  };
+
   // חלוקת ספקים לקטגוריות וסידור לפי פעילות
   const categorizeAndSortSuppliers = () => {
     // הוספת כמות חשבוניות לכל ספק (נתון דמה - בפועל יגיע מה-API)
@@ -51,19 +100,15 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
     }));
 
     // חלוקה לקטגוריות
-    const regular = suppliersWithActivity.filter(s => s.category === 'SUPPLIERS' && s.type !== 'DIRECT_DEBIT' && s.type !== 'FX');
-    const directDebit = suppliersWithActivity.filter(s => s.type === 'DIRECT_DEBIT');
-    const fx = suppliersWithActivity.filter(s => s.type === 'FX');
-    const adhoc = suppliersWithActivity.filter(s => s.category === 'ADHOC');
+    const permanent = suppliersWithActivity.filter(s => s.category === 'PERMANENT');
+    const occasional = suppliersWithActivity.filter(s => s.category === 'OCCASIONAL');
 
     // סידור לפי כמות חשבוניות (יורד)
     const sortByActivity = (arr: any[]) => arr.sort((a, b) => b.invoiceCount - a.invoiceCount);
 
     return {
-      regular: sortByActivity(regular),
-      directDebit: sortByActivity(directDebit),
-      fx: sortByActivity(fx),
-      adhoc: sortByActivity(adhoc)
+      permanent: sortByActivity(permanent),
+      occasional: sortByActivity(occasional)
     };
   };
 
@@ -90,9 +135,11 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
             {supplier.taxId && <span className="tax-id">ח.פ: {supplier.taxId}</span>}
           </div>
           <div className="supplier-details">
-            <span className="detail">{supplier.subcategory || supplier.category || 'ללא קטגוריה'}</span>
+            <span className="detail">{getCategoryLabel(supplier.category)}</span>
             <span className="separator">•</span>
-            <span className="detail">{supplier.paymentMethod || 'ללא אופן תשלום'}</span>
+            <span className="detail">{getTypeLabel(supplier.type)}</span>
+            <span className="separator">•</span>
+            <span className="detail">{getPaymentMethodLabel(supplier.paymentMethod)}</span>
             {supplier.invoiceCount > 0 && (
               <>
                 <span className="separator">•</span>
@@ -158,18 +205,18 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
   return (
     <div className="suppliers-container">
       {/* ספקים קבועים */}
-      <div className="category-group">
-        <h2 className="category-title">ספקים קבועים</h2>
-        {renderSection('רגילים', categorizedSuppliers.regular)}
-        {renderSection('הוראות קבע', categorizedSuppliers.directDebit)}
-        {renderSection('מט״ח', categorizedSuppliers.fx)}
-      </div>
+      {categorizedSuppliers.permanent.length > 0 && (
+        <div className="category-group">
+          <h2 className="category-title">ספקים קבועים</h2>
+          {renderSection('', categorizedSuppliers.permanent)}
+        </div>
+      )}
 
       {/* ספקים מזדמנים */}
-      {categorizedSuppliers.adhoc.length > 0 && (
+      {categorizedSuppliers.occasional.length > 0 && (
         <div className="category-group">
           <h2 className="category-title">ספקים מזדמנים</h2>
-          {renderSection('', categorizedSuppliers.adhoc)}
+          {renderSection('', categorizedSuppliers.occasional)}
         </div>
       )}
 
@@ -247,7 +294,6 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
               <th>שם ספק</th>
               <th>פרטי קשר</th>
               <th>קטגוריה</th>
-              <th>תת קטגוריה</th>
               <th>סוג</th>
               <th>אופן תשלום</th>
               <th>תנאי תשלום</th>
@@ -274,11 +320,10 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
                     פרטי קשר
                   </button>
                 </td>
-                <td>{supplier.category || '-'}</td>
-                <td>{supplier.subcategory || '-'}</td>
-                <td>{supplier.type || '-'}</td>
-                <td>{supplier.paymentMethod || '-'}</td>
-                <td>{supplier.paymentTerms || '-'}</td>
+                <td>{getCategoryLabel(supplier.category)}</td>
+                <td>{getTypeLabel(supplier.type)}</td>
+                <td>{getPaymentMethodLabel(supplier.paymentMethod)}</td>
+                <td>{getPaymentTermsLabel(supplier.paymentTerms)}</td>
                 <td>
                   <div className="actions">
                     <Link 
@@ -328,22 +373,22 @@ export default function SuppliersList({ suppliers }: SuppliersListProps) {
             <div className="supplier-card-content">
               <div className="info-row">
                 <span className="label">קטגוריה:</span>
-                <span>{supplier.category || '-'}</span>
-              </div>
-              
-              <div className="info-row">
-                <span className="label">תת קטגוריה:</span>
-                <span>{supplier.subcategory || '-'}</span>
+                <span>{getCategoryLabel(supplier.category)}</span>
               </div>
               
               <div className="info-row">
                 <span className="label">סוג:</span>
-                <span>{supplier.type || '-'}</span>
+                <span>{getTypeLabel(supplier.type)}</span>
               </div>
               
               <div className="info-row">
                 <span className="label">אופן תשלום:</span>
-                <span>{supplier.paymentMethod || '-'}</span>
+                <span>{getPaymentMethodLabel(supplier.paymentMethod)}</span>
+              </div>
+              
+              <div className="info-row">
+                <span className="label">תנאי תשלום:</span>
+                <span>{getPaymentTermsLabel(supplier.paymentTerms)}</span>
               </div>
               
               <div className="contact-section">

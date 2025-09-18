@@ -11,7 +11,7 @@ export default function NewSupplierPage() {
 
       <div className="new-supplier-content">
         <div className="navigation-back">
-          <Link href="/suppliers" className="back-link">
+          <Link href="/suppliers" className="btn-secondary">
             ← חזרה לרשימת ספקים
           </Link>
         </div>
