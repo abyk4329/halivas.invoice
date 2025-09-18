@@ -25,18 +25,12 @@ export default function RootLayout({
         <header className="appbar">
           <div className="logo-section">
             <img src="/halivas-logo.png" alt="HALIVAS Logo" className="logo-image" />
-            <div className="logo-text">
-              <h1>חליווס</h1>
-              <p>מערכת ספקים ותשלומים</p>
-            </div>
           </div>
           <nav>
             <a href="/">בית</a>
-            <a href="/dashboard">לוח בקרה</a>
             <a href="/suppliers">ספקים</a>
             <a href="/invoices">חשבוניות</a>
             <a href="/payments">תשלומים</a>
-            <a href="/recurring">הוצאות קבועות</a>
           </nav>
         </header>
         {children}
